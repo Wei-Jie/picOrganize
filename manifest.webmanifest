@@ -1,0 +1,26 @@
+{
+  "name": "picOrganize 旅遊照片智慧挑選",
+  "short_name": "picOrganize",
+  "description": "手機本機高速快篩、鎖定必選、拖曳排序與個人風格社群貼文生成 App",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
