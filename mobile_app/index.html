@@ -448,6 +448,17 @@
     <!-- ==================== 分頁 4：設定與文風 ==================== -->
     <section id="tab_settings" style="display:none;">
       <div class="box">
+        <div style="font-weight:800;margin-bottom:6px;">🔐 以通行密碼（APP_PIN）一鍵解鎖 GitHub 環境變數金鑰</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">
+          若已在 GitHub Actions Secrets 設定 `APP_PIN` 與金鑰，輸入通行密碼即可自動解鎖帶入：
+        </div>
+        <div style="display:flex;gap:8px;">
+          <input id="pinUnlockIn" class="text-in" autocomplete="off" style="-webkit-text-security:disc;" placeholder="輸入你在 GitHub 設定的 APP_PIN" />
+          <button class="btn sm green" style="white-space:nowrap;" onclick="unlockVaultWithPin()">🔓 解鎖金鑰</button>
+        </div>
+      </div>
+
+      <div class="box">
         <div style="font-weight:800;margin-bottom:6px;">🔑 Google Gemini API Key（免費申請，儲存在手機本機）</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
           用來讓 AI 看縮圖挑 8 張照片並依你的文風寫貼文。Google 官方提供免費額度（不用綁卡）：<br />
@@ -533,6 +544,9 @@
         humor: { label: "幽默自嘲版", ig: "", fb: "", threads: "" }
       }
     };
+
+    // 由 GitHub Actions 在部署時以 APP_PIN 自動加密注入（原始碼中保持空白，絕不暴露明文金鑰）
+    const ENCRYPTED_VAULT = "";
 
     // 注意：公開於 GitHub Pages 時，原始碼內不放私密金鑰（避免被 GitHub 掃描撤銷）；金鑰儲存於瀏覽器本機 localStorage
     const DEFAULT_SETTINGS = {
@@ -1624,6 +1638,31 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
       updateHeader();
       renderReview();
       toast("已清空旅程照片");
+    }
+
+    async function unlockVaultWithPin() {
+      const pin = document.getElementById("pinUnlockIn").value.trim();
+      if (!pin) { alert("請輸入 APP_PIN 通行密碼"); return; }
+      if (!ENCRYPTED_VAULT) {
+        alert("目前網頁尚未包含加密金鑰，請確認已在 GitHub Secrets 設定 APP_PIN 並將 Pages Source 設為 GitHub Actions。");
+        return;
+      }
+      try {
+        const enc = Uint8Array.from(atob(ENCRYPTED_VAULT), c => c.charCodeAt(0));
+        const hashBuf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pin));
+        const key = new Uint8Array(hashBuf);
+        const dec = new Uint8Array(enc.length);
+        for (let i = 0; i < enc.length; i++) dec[i] = enc[i] ^ key[i % key.length];
+        const obj = JSON.parse(new TextDecoder("utf-8").decode(dec));
+        if (obj.geminiKey) SETTINGS.geminiKey = obj.geminiKey;
+        if (obj.tgToken) SETTINGS.tgToken = obj.tgToken;
+        if (obj.tgChatId) SETTINGS.tgChatId = obj.tgChatId;
+        initSettingsUI();
+        saveSettings();
+        toast("🎉 解鎖成功！已自動帶入所有金鑰！");
+      } catch (e) {
+        alert("通行密碼不正確，解鎖失敗！");
+      }
     }
 
     function copyMagicBookmarkUrl() {

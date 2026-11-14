@@ -24,6 +24,37 @@ jobs:
       - name: 檢出專案原始碼
         uses: actions/checkout@v4
 
+      - name: 將 GitHub Secrets 以 APP_PIN 加密注入網頁（避免明文外洩）
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APP_PIN: ${{ secrets.APP_PIN }}
+        run: |
+          python3 - << 'EOF'
+          import base64, hashlib, json, os
+          from pathlib import Path
+
+          pin = (os.environ.get("APP_PIN") or "").strip()
+          payload = {
+              "geminiKey": (os.environ.get("GEMINI_API_KEY") or "").strip(),
+              "tgToken": (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip(),
+              "tgChatId": (os.environ.get("TELEGRAM_CHAT_ID") or "").strip(),
+          }
+          if pin and any(payload.values()):
+              raw = json.dumps(payload).encode("utf-8")
+              key = hashlib.sha256(pin.encode("utf-8")).digest()
+              enc = bytes(b ^ key[i % len(key)] for i, b in enumerate(raw))
+              b64 = base64.b64encode(enc).decode("ascii")
+              html_path = Path("mobile_app/index.html")
+              txt = html_path.read_text(encoding="utf-8")
+              txt = txt.replace('const ENCRYPTED_VAULT = "";', f'const ENCRYPTED_VAULT = "{b64}";')
+              html_path.write_text(txt, encoding="utf-8")
+              print("Injected encrypted vault successfully.")
+          else:
+              print("No APP_PIN or secrets configured; skipping vault injection.")
+          EOF
+
       - name: 設定 GitHub Pages
         uses: actions/configure-pages@v5
 
