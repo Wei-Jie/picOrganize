@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>picOrganize｜照片挑選與發布工作台</title>
+  <script src="/static/Sortable.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --card: #273549;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-strong: #0284c7;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand h1 { margin: 0; font-size: 18px; }
+    .badge {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .nav-tabs { display: flex; gap: 8px; }
+    .btn {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: var(--accent-strong); border-color: var(--accent); color: #fff; }
+    .btn.green { background: #15803d; border-color: var(--green); color: #fff; }
+    .btn.active { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+    main { max-width: 1400px; margin: 0 auto; padding: 20px 24px 80px; }
+
+    /* 已選輪播拖曳條 */
+    .tray {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+    .tray-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .tray-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      min-height: 112px;
+    }
+    .tray-item {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      flex: 0 0 auto;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+      cursor: grab;
+      background: #000;
+    }
+    .tray-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .order-num {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(2, 132, 199, 0.92);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .cover-tag {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      background: rgba(245, 158, 11, 0.95);
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .lock-icon {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(15, 23, 42, 0.82);
+      font-size: 12px;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(239, 68, 68, 0.92);
+      color: #fff;
+      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 20px;
+      text-align: center;
+      padding: 0;
+    }
+    .remove-btn:hover { background: #dc2626; transform: scale(1.08); }
+
+    /* 景點群組與照片牆 */
+    .cluster-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .cluster-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .cluster-note {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      min-width: 240px;
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 12px;
+    }
+    .photo-card {
+      position: relative;
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .photo-card:hover { transform: translateY(-2px); }
+    .photo-card.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .photo-card img { width: 100%; height: 155px; object-fit: cover; display: block; background: #000; }
+    .photo-meta { padding: 8px 10px; font-size: 12px; color: var(--muted); }
+    .photo-meta .reason { color: #bae6fd; margin-top: 3px; font-size: 12px; }
+    .warn-chip {
+      display: inline-block;
+      margin-top: 4px;
+      margin-right: 4px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+    }
+    .new-chip {
+      position: absolute;
+      bottom: 62px;
+      right: 6px;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* 發布預覽頁雙欄 */
+    .publish-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 960px) { .publish-layout { grid-template-columns: 1fr; } }
+    .panel-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .carousel-stage {
+      position: relative;
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .carousel-stage img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+      border: 1px solid var(--border);
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .carousel-nav.prev { left: 10px; }
+    .carousel-nav.next { right: 10px; }
+    textarea.caption-editor {
+      width: 100%;
+      min-height: 250px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.65;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .tip-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #e0f2fe;
+      margin-top: 14px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0284c7;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1 id="tripTitle">picOrganize</h1>
+      <span class="badge" id="statBadge">載入中...</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="btn" id="tabReviewBtn" onclick="switchView('review')">① 人工確認選圖</button>
+      <button class="btn" id="tabPublishBtn" onclick="switchView('publish')">② A+ 發布預覽＆拖曳排序</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==================== 視圖 1：人工確認頁 ==================== -->
+    <section id="viewReview" style="display:none;">
+      <div class="tray">
+        <div class="tray-head">
+          <div>
+            <strong>已選輪播順序（可直接拖曳縮圖調整順序）</strong>
+            <span style="color:var(--muted);font-size:13px;margin-left:8px;">點擊下方照片可加入（自動鎖定 🔒）或取消選取</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label style="font-size:13px;cursor:pointer;">
+              <input type="checkbox" id="onlyNewChk" onchange="renderReview()" /> 只看新照片（NEW）
+            </label>
+            <button class="btn" onclick="reselectPhotos(false)" title="將缺額自動用高分候選照補滿">➕ 自動補滿名額</button>
+            <button class="btn" onclick="reselectPhotos(true)" title="保留已鎖定 🔒 的照片，把其他未鎖定照片換成下一批">🔄 換一批（保留鎖定 🔒）</button>
+            <select id="captionModeSel" class="cluster-note" style="min-width:160px;">
+              <option value="rewrite">文案：依選圖重新產出</option>
+              <option value="patch">文案：局部補寫新照片</option>
+              <option value="keep">文案：保留現有文字</option>
+            </select>
+            <button class="btn green" onclick="confirmAndExport()">✅ 確認選圖並匯出 → 前往發布預覽</button>
+          </div>
+        </div>
+        <div class="tray-list" id="reviewOrderStrip"></div>
+      </div>
+
+      <div id="clustersContainer"></div>
+
+      <details class="cluster-box" id="rejectedBox">
+        <summary style="cursor:pointer;font-weight:700;color:var(--muted);" id="rejectedSummary">
+          展開「已淘汰照片」（點擊任一張即可救回並鎖定 🔒）
+        </summary>
+        <div class="grid" id="rejectedGrid" style="margin-top:14px;"></div>
+      </details>
+    </section>
+
+    <!-- ==================== 視圖 2：A+ 發布預覽頁 ==================== -->
+    <section id="viewPublish" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        <div style="display:flex;gap:8px; align-items:center;">
+          <button class="btn active" id="platBtn_ig" onclick="switchPlatform('ig')">📸 Instagram（4:5）</button>
+          <button class="btn" id="platBtn_fb" onclick="switchPlatform('fb')">📘 Facebook</button>
+          <button class="btn" id="platBtn_threads" onclick="switchPlatform('threads')">🧵 Threads</button>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <label style="font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="indepOrderChk" onchange="toggleIndependentOrder()" />
+            此平台獨立排序
+          </label>
+          <button class="btn" onclick="resetAiOrder()">↺ 恢復 AI 建議順序</button>
+          <button class="btn" onclick="openFolder()">📂 開啟照片資料夾</button>
+          <button class="btn primary" onclick="sendTelegram()">📤 傳送到 Telegram</button>
+        </div>
+      </div>
+
+      <div class="publish-layout">
+        <!-- 左欄：仿貼文輪播預覽 + 拖曳排序縮圖列 -->
+        <div class="panel-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong id="carouselCaptionTitle">輪播預覽</strong>
+            <span style="font-size:12px;color:var(--muted);" id="readyFileLabel"></span>
+          </div>
+          <div class="carousel-stage">
+            <button class="carousel-nav prev" onclick="stepCarousel(-1)">‹</button>
+            <img id="carouselMainImg" src="" alt="預覽圖" />
+            <button class="carousel-nav next" onclick="stepCarousel(1)">›</button>
+          </div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">
+            👇 <strong>直接拖曳下方縮圖即可調整貼文照片順序</strong>（放開後自動更新 `ready_to_post/` 編號檔名）：
+          </div>
+          <div class="tray-list" id="publishOrderStrip"></div>
+
+          <div class="tip-box">
+            <strong>💡 讓上傳順序 100% 不亂掉的做法：</strong><br />
+            • <strong>電腦網頁發文</strong>：在 FB／IG 點「新增相片」，在檔案視窗<strong>先點 `01_...jpg`，再按住 Shift 點最後一張</strong>（切勿從檔案總管全選直接拖曳，Windows 拖曳不保證順序）。<br />
+            • <strong>手機 Telegram 發文</strong>：存下照片後，在 IG／FB App 依編號 ①→②→③ 逐張點選。
+          </div>
+        </div>
+
+        <!-- 右欄：多版本文案編輯與一鍵複製 -->
+        <div class="panel-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span>文案版本：</span>
+              <select id="variantSel" class="cluster-note" style="min-width:150px;" onchange="onVariantChange()"></select>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn" onclick="regenCaption('patch')">✨ 局部補寫</button>
+              <button class="btn" onclick="regenCaption('rewrite')">🔄 重新產出</button>
+            </div>
+          </div>
+
+          <textarea id="captionEditor" class="caption-editor" oninput="scheduleSaveCaption()"></textarea>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px;">
+            <button class="btn green" onclick="copyCaption()">📋 一鍵複製文案</button>
+            <button class="btn" onclick="saveAsStyleExample()">⭐ 存為個人風格範例（回饋 style_profile.yaml）</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let STATE = null;
+    let CURRENT_VIEW = window.location.pathname.includes("publish") ? "publish" : "review";
+    let CURRENT_PLAT = "ig";
+    let CAROUSEL_IDX = 0;
+    let reviewSortable = null;
+    let publishSortable = null;
+    let saveTimer = null;
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(el._t);
+      el._t = setTimeout(() => { el.style.display = "none"; }, 2600);
+    }
+
+    async function api(path, body = null) {
+      const opts = body
+        ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+        : { method: "GET" };
+      const r = await fetch(path, opts);
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({ detail: r.statusText }));
+        throw new Error(err.detail || "請求失敗");
+      }
+      return r.json();
+    }
+
+    function photoById(id) {
+      return (STATE.photos || []).find(p => p.id === id);
+    }
+
+    function currentPlatformOrder() {
+      const o = STATE.orders || {};
+      return o[CURRENT_PLAT] || o.shared || [];
+    }
+
+    async function loadState() {
+      STATE = await api("/api/state");
+      document.getElementById("tripTitle").textContent = `picOrganize｜${STATE.trip}`;
+      const selCount = (STATE.photos || []).filter(p => p.status === "selected").length;
+      const lockedCount = (STATE.photos || []).filter(p => p.locked).length;
+      document.getElementById("statBadge").textContent =
+        `總計 ${STATE.photos.length} 張｜已選 ${selCount} 張（鎖定 🔒 ${lockedCount}）｜匯出 v${STATE.export_version}`;
+      renderAll();
+    }
+
+    function switchView(v) {
+      CURRENT_VIEW = v;
+      document.getElementById("viewReview").style.display = v === "review" ? "block" : "none";
+      document.getElementById("viewPublish").style.display = v === "publish" ? "block" : "none";
+      document.getElementById("tabReviewBtn").classList.toggle("active", v === "review");
+      document.getElementById("tabPublishBtn").classList.toggle("active", v === "publish");
+      renderAll();
+    }
+
+    function renderAll() {
+      if (!STATE) return;
+      if (CURRENT_VIEW === "review") renderReview();
+      else renderPublish();
+    }
+
+    function buildStripHTML(ids) {
+      return ids.map((id, idx) => {
+        const p = photoById(id);
+        if (!p) return "";
+        return `
+          <div class="tray-item" data-id="${p.id}" onclick="selectCarouselIdx(${idx})">
+            <img src="/thumbs/${p.id}.jpg" alt="${p.id}" />
+            <span class="order-num">#${idx + 1}</span>
+            <button class="remove-btn" title="移除這張照片" onclick="event.stopPropagation(); togglePhoto('${p.id}', false)">✕</button>
+            ${idx === 0 ? '<span class="cover-tag">封面</span>' : ''}
+            ${p.locked ? '<span class="lock-icon" title="手動鎖定，不會被淘汰或替換">🔒</span>' : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function formatWarn(w) {
+      if (w === "blur") return "⚠️ 略模糊（已鎖定保留）";
+      if (w === "exposure") return "⚠️ 曝光偏極端（已鎖定保留）";
+      if (w.startsWith("similar:")) return `⚠️ 與 ${w.slice(8, 23)} 相似`;
+      return `⚠️ ${w}`;
+    }
+
+    function renderCard(p) {
+      const isNew = STATE.max_batch > 1 && p.batch === STATE.max_batch;
+      const warns = (p.warnings || []).map(w => `<span class="warn-chip">${formatWarn(w)}</span>`).join("");
+      const rejectMap = { blur: "模糊淘汰", duplicate: "連拍相似", exposure: "過曝／過暗" };
+      const rejectBadge = p.reject_reason ? `<span class="warn-chip">${rejectMap[p.reject_reason] || p.reject_reason}</span>` : "";
+      return `
+        <div class="photo-card ${p.status === 'selected' ? 'selected' : ''}" onclick="togglePhoto('${p.id}', ${p.status !== 'selected'})">
+          <img src="/thumbs/${p.id}.jpg" loading="lazy" alt="${p.id}" />
+          ${p.locked ? '<span class="lock-icon">🔒 鎖定</span>' : ''}
+          ${isNew ? '<span class="new-chip">NEW</span>' : ''}
+          <div class="photo-meta">
+            <div>${p.taken_at.slice(11, 19)}｜清晰 ${p.scores?.blur ?? '-'}</div>
+            ${p.ai_reason ? `<div class="reason">✨ ${p.ai_reason}</div>` : ''}
+            ${warns}${rejectBadge}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReview() {
+      const strip = document.getElementById("reviewOrderStrip");
+      strip.innerHTML = buildStripHTML(STATE.orders.shared || []);
+      if (reviewSortable) reviewSortable.destroy();
+      reviewSortable = new Sortable(strip, {
+        animation: 150,
+        onEnd: async () => {
+          const ids = Array.from(strip.querySelectorAll(".tray-item")).map(el => el.dataset.id);
+          STATE = await api("/api/order", { platform: "shared", independent: false, ordered_ids: ids });
+          showToast("已更新輪播順序");
+          renderReview();
+        }
+      });
+
+      const onlyNew = document.getElementById("onlyNewChk").checked;
+      const box = document.getElementById("clustersContainer");
+      box.innerHTML = (STATE.clusters || []).map(c => {
+        const list = (STATE.photos || []).filter(p =>
+          p.cluster === c.id &&
+          p.status !== "rejected" &&
+          (!onlyNew || p.batch === STATE.max_batch)
+        );
+        if (!list.length) return "";
+        const placeStr = c.place ? `（GPS：${c.place}）` : "";
+        return `
+          <div class="cluster-box">
+            <div class="cluster-header">
+              <div>
+                <strong>📍 ${c.id}${placeStr}</strong>
+                <span style="color:var(--muted);font-size:13px;margin-left:8px;">
+                  ${c.start.slice(11, 16)} ~ ${c.end.slice(11, 16)}（候選 ${list.length} 張）
+                </span>
+              </div>
+              <input class="cluster-note" placeholder="輸入此景點名稱或備註（供文案生成使用）..."
+                value="${(c.note || '').replace(/"/g, '&quot;')}"
+                onchange="saveClusterNote('${c.id}', this.value)" />
+            </div>
+            <div class="grid">${list.map(renderCard).join("")}</div>
+          </div>
+        `;
+      }).join("");
+
+      const rejected = (STATE.photos || []).filter(p => p.status === "rejected" && (!onlyNew || p.batch === STATE.max_batch));
+      document.getElementById("rejectedSummary").textContent =
+        `展開「已淘汰照片」（共 ${rejected.length} 張，點擊任一張即可救回並鎖定 🔒）`;
+      document.getElementById("rejectedGrid").innerHTML = rejected.map(renderCard).join("");
+    }
+
+    async function togglePhoto(id, select) {
+      STATE = await api("/api/toggle", { photo_id: id, select });
+      showToast(select ? "已加入並鎖定 🔒（不會被篩選淘汰）" : "已移除選取（不會再被自動挑回）");
+      renderAll();
+    }
+
+    async function reselectPhotos(dismissCurrent) {
+      STATE = await api("/api/reselect", { dismiss_current: dismissCurrent, reset_dismissed: false });
+      showToast(dismissCurrent ? "🔄 已換一批照片（🔒 鎖定照片全數保留）" : "➕ 已自動補滿名額");
+      renderAll();
+    }
+
+    async function saveClusterNote(clusterId, note) {
+      await api("/api/cluster-note", { cluster_id: clusterId, note });
+      showToast("已儲存景點備註");
+    }
+
+    async function confirmAndExport() {
+      const mode = document.getElementById("captionModeSel").value;
+      showToast("正在匯出各平台無 GPS 照片與文案...");
+      STATE = await api("/api/confirm-and-export", { mode });
+      showToast("匯出完成！");
+      switchView("publish");
+    }
+
+    // ==================== 發布預覽頁 ====================
+    function switchPlatform(plat) {
+      CURRENT_PLAT = plat;
+      CAROUSEL_IDX = 0;
+      ["ig", "fb", "threads"].forEach(p => {
+        document.getElementById(`platBtn_${p}`).classList.toggle("active", p === plat);
+      });
+      renderPublish();
+    }
+
+    function renderPublish() {
+      const ids = currentPlatformOrder();
+      if (CAROUSEL_IDX >= ids.length) CAROUSEL_IDX = 0;
+      const indep = Array.isArray(STATE.orders[CURRENT_PLAT]);
+      document.getElementById("indepOrderChk").checked = indep;
+
+      // 輪播主圖
+      const readyList = (STATE.ready_files || {})[CURRENT_PLAT] || [];
+      const curId = ids[CAROUSEL_IDX];
+      const mainImg = document.getElementById("carouselMainImg");
+      if (readyList[CAROUSEL_IDX]) {
+        mainImg.src = `/ready/${CURRENT_PLAT}/${readyList[CAROUSEL_IDX]}?t=${Date.now()}`;
+        document.getElementById("readyFileLabel").textContent = `檔案：ready_to_post/${CURRENT_PLAT}/${readyList[CAROUSEL_IDX]}`;
+      } else if (curId) {
+        mainImg.src = `/thumbs/${curId}.jpg`;
+        document.getElementById("readyFileLabel").textContent = `（尚未匯出，顯示縮圖預覽）`;
+      }
+      document.getElementById("carouselCaptionTitle").textContent =
+        `${CURRENT_PLAT.toUpperCase()} 輪播預覽（第 ${ids.length ? CAROUSEL_IDX + 1 : 0} / ${ids.length} 張）`;
+
+      // 下方拖曳縮圖列
+      const strip = document.getElementById("publishOrderStrip");
+      strip.innerHTML = buildStripHTML(ids);
+      if (publishSortable) publishSortable.destroy();
+      publishSortable = new Sortable(strip, {
+        animation: 150,
+        onEnd: async () => {
+          const newIds = Array.from(strip.querySelectorAll(".tray-item")).map(el => el.dataset.id);
+          const isIndep = document.getElementById("indepOrderChk").checked;
+          STATE = await api("/api/order", {
+            platform: isIndep ? CURRENT_PLAT : "shared",
+            independent: isIndep,
+            ordered_ids: newIds,
+          });
+          CAROUSEL_IDX = 0;
+          showToast("順序已更新，ready_to_post 檔名已即時重新編號！");
+          renderPublish();
+        }
+      });
+
+      // 文案下拉與內容
+      const caps = STATE.captions || { active_variant: "narrative", variants: {} };
+      const variants = caps.variants || {};
+      const sel = document.getElementById("variantSel");
+      sel.innerHTML = Object.entries(variants).map(([k, v]) =>
+        `<option value="${k}" ${k === caps.active_variant ? 'selected' : ''}>${v.label || k}</option>`
+      ).join("");
+      const curVar = variants[caps.active_variant] || {};
+      document.getElementById("captionEditor").value = curVar[CURRENT_PLAT] || "";
+    }
+
+    function selectCarouselIdx(idx) {
+      CAROUSEL_IDX = idx;
+      if (CURRENT_VIEW === "publish") renderPublish();
+    }
+
+    function stepCarousel(delta) {
+      const ids = currentPlatformOrder();
+      if (!ids.length) return;
+      CAROUSEL_IDX = (CAROUSEL_IDX + delta + ids.length) % ids.length;
+      renderPublish();
+    }
+
+    async function toggleIndependentOrder() {
+      const indep = document.getElementById("indepOrderChk").checked;
+      const ids = currentPlatformOrder();
+      STATE = await api("/api/order", {
+        platform: CURRENT_PLAT,
+        independent: indep,
+        ordered_ids: ids,
+      });
+      showToast(indep ? `已啟用 ${CURRENT_PLAT.toUpperCase()} 獨立排序` : "已改回與其他平台共用順序");
+      renderPublish();
+    }
+
+    async function resetAiOrder() {
+      STATE = await api("/api/reset-order", {});
+      CAROUSEL_IDX = 0;
+      showToast("已恢復為 AI 建議順序");
+      renderPublish();
+    }
+
+    function onVariantChange() {
+      STATE.captions.active_variant = document.getElementById("variantSel").value;
+      renderPublish();
+    }
+
+    function scheduleSaveCaption() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        const text = document.getElementById("captionEditor").value;
+        const active_variant = document.getElementById("variantSel").value;
+        const res = await api("/api/caption", { active_variant, platform: CURRENT_PLAT, text });
+        STATE.captions = res.captions;
+      }, 450);
+    }
+
+    async function regenCaption(mode) {
+      const res = await api("/api/regenerate-captions", { mode });
+      STATE.captions = res.captions;
+      showToast(mode === "patch" ? "已局部補寫新照片段落" : "已重新產出文案");
+      renderPublish();
+    }
+
+    async function copyCaption() {
+      const text = document.getElementById("captionEditor").value;
+      await navigator.clipboard.writeText(text);
+      showToast("📋 文案已複製到剪貼簿！");
+    }
+
+    async function openFolder() {
+      await api(`/api/open-folder?platform=${CURRENT_PLAT}`, {});
+      showToast(`📂 已在檔案總管開啟 ready_to_post/${CURRENT_PLAT}`);
+    }
+
+    async function saveAsStyleExample() {
+      const text = document.getElementById("captionEditor").value;
+      if (!text.trim()) return;
+      const res = await api("/api/save-style", { context: STATE.trip, text });
+      showToast(`⭐ 已存入 style_profile.yaml（目前共 ${res.examples_count} 篇範例）`);
+    }
+
+    async function sendTelegram() {
+      try {
+        showToast("📤 正在傳送文案與照片到 Telegram...");
+        const variant = document.getElementById("variantSel").value;
+        const res = await api("/api/send-telegram", { platform: CURRENT_PLAT, variant });
+        showToast(`✅ 已傳送 ${res.photos} 張照片至 Telegram（v${res.version}）`);
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    switchView(CURRENT_VIEW);
+    loadState();
+  </script>
+</body>
+</html>

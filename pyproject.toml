@@ -1,0 +1,40 @@
+[project]
+name = "picorganize"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "wei-jie", email = "jeff.wang0211@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.162.3",
+    "imagehash>=4.3.2",
+    "numpy>=2.5.4",
+    "opencv-python-headless>=5.0.0.93",
+    "piexif>=1.1.3",
+    "pillow>=13.0.0",
+    "pillow-heif>=1.8.1",
+    "pydantic>=2.14.3",
+    "pydantic-settings>=2.16.2",
+    "pyyaml>=6.0.3",
+    "requests>=2.34.2",
+    "reverse-geocoder>=1.5.1",
+    "typer>=0.29.0",
+    "uvicorn[standard]>=0.54.0",
+    "watchdog>=7.1.0",
+]
+
+[project.scripts]
+pic = "picorganize.cli:app"
+picorganize = "picorganize.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.11.13,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+]

@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>picOrganize 手機隨身版</title>
+  <script src="./Sortable.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --card: #273549;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dark: #0284c7;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: calc(78px + env(safe-area-inset-bottom));
+      overscroll-behavior-y: contain;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .app-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+    .stat-pill {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    main { padding: 12px 12px 24px; max-width: 1080px; margin: 0 auto; }
+    .box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn.primary { background: var(--accent-dark); border-color: var(--accent); color: #fff; }
+    .btn.green { background: #15803d; border-color: var(--green); color: #fff; }
+    .btn.amber { background: #b45309; border-color: var(--amber); color: #fff; }
+    .btn.active { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+    .btn.block { width: 100%; padding: 13px 16px; font-size: 15px; }
+    .btn.sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+    input.text-in, textarea.text-in, select.text-in {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    /* 進度條 */
+    .progress-wrap {
+      display: none;
+      margin-top: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.1s; }
+
+    /* 橫向已選底片條（支援觸控長按拖曳 + 左右箭頭微調） */
+    .strip {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 8px;
+      min-height: 112px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .strip-item {
+      position: relative;
+      width: 94px;
+      height: 102px;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+      background: #000;
+      user-select: none;
+    }
+    .strip-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .num-badge {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(2, 132, 199, 0.95);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+    .rm-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(239, 68, 68, 0.95);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 0;
+    }
+    .move-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.86);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 4px;
+      font-size: 11px;
+    }
+    .move-bar button {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      padding: 1px 5px;
+      cursor: pointer;
+    }
+
+    /* 手機雙欄照片牆 */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 520px) { .photo-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 860px) { .photo-grid { grid-template-columns: repeat(4, 1fr); } }
+    .p-card {
+      position: relative;
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .p-card.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35); }
+    .p-card img { width: 100%; height: 145px; object-fit: cover; display: block; background: #000; }
+    .p-info { padding: 6px 8px; font-size: 11px; color: var(--muted); }
+    .p-reason { color: #bae6fd; margin-top: 2px; font-size: 11px; }
+    .chip-warn {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 10px;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.45);
+    }
+    .chip-lock {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(15, 23, 42, 0.86);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .chip-new {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: var(--red);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    /* 輪播預覽舞台 */
+    .stage {
+      position: relative;
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .stage-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.82);
+      color: #fff;
+      font-size: 18px;
+    }
+    .stage-nav.prev { left: 8px; }
+    .stage-nav.next { right: 8px; }
+
+    /* 底部固定導覽列 */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.97);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    .nav-btn .ico { font-size: 18px; }
+    .nav-btn.active { color: var(--accent); }
+
+    .toast {
+      position: fixed;
+      bottom: calc(82px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0284c7;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      display: none;
+      z-index: 99;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="app-title">📸 <span id="hdrTrip">picOrganize 手機版</span></div>
+    <span class="stat-pill" id="hdrStat">尚未選取照片</span>
+  </header>
+
+  <main>
+    <!-- ==================== 分頁 1：匯入與追加照片 ==================== -->
+    <section id="tab_import">
+      <div class="box">
+        <div style="font-weight:800;margin-bottom:8px;">📍 步驟 1：設定旅程名稱</div>
+        <input id="tripNameIn" class="text-in" placeholder="例如：115-11-06_爬爬硬漢嶺" value="週末小旅行" oninput="APP.trip = this.value || '週末小旅行'; updateHeader();" />
+        <input id="tripNoteIn" class="text-in" style="margin-top:8px;" placeholder="選填：走訪景點、吃到的美食或心情備註（供文案使用）" oninput="APP.tripNote = this.value;" />
+      </div>
+
+      <div class="box">
+        <div style="font-weight:800;margin-bottom:6px;">📱 步驟 2：直接從手機挑選照片（本機高速快篩）</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+          照片<strong>直接在你的手機記憶體內計算</strong>模糊度、連拍去重與時段分群，<strong>不會把 300 張原圖上傳到網路</strong>，省流量又快！
+        </div>
+        <input type="file" id="fileAutoIn" multiple accept="image/*" style="display:none;" onchange="handleFiles(this.files, 'auto'); this.value='';" />
+        <button class="btn primary block" onclick="document.getElementById('fileAutoIn').click()">
+          📥 選取旅遊照片（交給程式快篩＆挑 8 張）
+        </button>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="font-weight:800;margin-bottom:4px;">🔒 追加你指定的必選照片（絕不淘汰）</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+            有紀念意義但略模糊、或跟別張很像的照片從這裡加：自動加上 <strong>🔒 鎖定</strong>，不會被篩掉，AI 也不會換掉它。
+          </div>
+          <input type="file" id="fileManualIn" multiple accept="image/*" style="display:none;" onchange="handleFiles(this.files, 'manual'); this.value='';" />
+          <button class="btn amber block" onclick="document.getElementById('fileManualIn').click()">
+            ➕ 追加必選照片（🔒 自動鎖定保留）
+          </button>
+        </div>
+
+        <div class="progress-wrap" id="progWrap">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span id="progText">正在手機本機分析照片...</span>
+            <span id="progNum">0 / 0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+        </div>
+      </div>
+
+      <div class="box" id="installGuideBox">
+        <div style="font-weight:800;margin-bottom:6px;">📲 把它變成桌面 App / APK</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+          • <strong>直接安裝（推薦）</strong>：點手機 Chrome 右上角「⋮」→ 點「<strong>加到主畫面 / 安裝應用程式</strong>」，桌面就會出現獨立的 `picOrganize` App 圖示。<br />
+          • <strong>清空目前旅程</strong>：<button class="btn sm" style="margin-left:4px;" onclick="resetTrip()">🗑️ 清空重來</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 分頁 2：挑圖確認 ==================== -->
+    <section id="tab_review" style="display:none;">
+      <div class="box">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+          <strong style="font-size:14px;">已選輪播順序（長按縮圖拖曳，或點 ◀ ▶ 移位）</strong>
+          <label style="font-size:12px;">
+            <input type="checkbox" id="onlyNewChk" onchange="renderReview()" /> 只看新追加
+          </label>
+        </div>
+        <div class="strip" id="reviewStrip"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn sm primary" onclick="runGeminiCurate()">✨ AI 看圖挑 8 張＋寫文案</button>
+          <button class="btn sm" onclick="reselectLocal(true)">🔄 換一批（保留 🔒）</button>
+          <button class="btn sm" onclick="reselectLocal(false)">➕ 自動補滿 8 張</button>
+          <button class="btn sm green" onclick="goTab('publish')">下一步：排順序＆發文 👉</button>
+        </div>
+      </div>
+
+      <div id="clustersWrap"></div>
+
+      <details class="box">
+        <summary style="cursor:pointer;font-weight:700;font-size:13px;color:var(--muted);" id="rejSummary">
+          展開「已淘汰照片」（點一下即可救回並鎖定 🔒）
+        </summary>
+        <div class="photo-grid" id="rejGrid" style="margin-top:10px;"></div>
+      </details>
+    </section>
+
+    <!-- ==================== 分頁 3：排序、文案與分享 ==================== -->
+    <section id="tab_publish" style="display:none;">
+      <div class="box">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm active" id="pbtn_ig" onclick="setPlat('ig')">📸 IG (4:5)</button>
+            <button class="btn sm" id="pbtn_fb" onclick="setPlat('fb')">📘 FB</button>
+            <button class="btn sm" id="pbtn_threads" onclick="setPlat('threads')">🧵 Threads</button>
+          </div>
+          <label style="font-size:12px;">
+            <input type="checkbox" id="indepChk" onchange="toggleIndep()" /> 此平台獨立排序
+          </label>
+        </div>
+
+        <div class="stage">
+          <button class="stage-nav prev" onclick="stepStage(-1)">‹</button>
+          <img id="stageImg" src="" alt="預覽" />
+          <button class="stage-nav next" onclick="stepStage(1)">›</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;">
+          <span id="stageTitle">第 1 / 8 張</span>
+          <span>長按下方縮圖拖曳、或點 ◀ ▶ 調順序</span>
+        </div>
+        <div class="strip" id="publishStrip"></div>
+      </div>
+
+      <div class="box">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+          <select id="varSel" class="text-in" style="width:auto;min-width:155px;" onchange="onVarChange()">
+            <option value="narrative">敘事生活版</option>
+            <option value="short">精簡短版</option>
+            <option value="humor">幽默自嘲版</option>
+          </select>
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm primary" id="btnGenCap" onclick="runGeminiCaptionsOnly()">✨ AI 看圖重寫文案</button>
+          </div>
+        </div>
+
+        <textarea id="capBox" class="text-in" style="min-height:190px;line-height:1.6;" oninput="saveCurCaption()"></textarea>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+          <button class="btn green" onclick="shareNative()">📲 複製文案＋系統分享照片</button>
+          <button class="btn primary" onclick="sendToTelegramMobile()">📤 傳送到 Telegram</button>
+          <button class="btn" onclick="copyTextOnly()">📋 僅複製文案</button>
+          <button class="btn" onclick="downloadExportedFiles()">💾 下載編號照片 (無 GPS)</button>
+        </div>
+        <button class="btn sm block" style="margin-top:8px;" onclick="saveToStyleProfile()">
+          ⭐ 將目前修改好的文案存為個人風格範例
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== 分頁 4：設定與文風 ==================== -->
+    <section id="tab_settings" style="display:none;">
+      <div class="box">
+        <div style="font-weight:800;margin-bottom:6px;">🔑 Google Gemini API Key（免費申請，儲存在手機本機）</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
+          用來讓 AI 看縮圖挑 8 張照片並依你的文風寫貼文。Google 官方提供免費額度（不用綁卡）：<br />
+          1. 點開 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a> 登入 Google 帳號<br />
+          2. 點「<strong>Create API key</strong>」→ 複製 `AQ.` 或 `AIza...` 開頭的金鑰貼在下方：
+        </div>
+        <input type="password" id="geminiKeyIn" class="text-in" placeholder="貼上 AQ.Ab8RN6... 或 AIzaSy... 金鑰" onchange="saveSettings()" />
+      </div>
+
+      <div class="box">
+        <div style="font-weight:800;margin-bottom:6px;">✈️ Telegram Bot 設定（選填，傳照片到聊天室備份）</div>
+        <input id="tgTokenIn" class="text-in" placeholder="Bot Token（例如 9124449600:AAG...）" onchange="saveSettings()" />
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input id="tgChatIn" class="text-in" placeholder="Chat ID（點右側按鈕自動抓取）" onchange="saveSettings()" />
+          <button class="btn sm primary" style="white-space:nowrap;" onclick="detectTelegramChatId()">自動抓取 Chat ID</button>
+        </div>
+        <button class="btn sm block" style="margin-top:10px;" onclick="copyMagicBookmarkUrl()">
+          🔗 複製「帶金鑰專屬書籤連結」（換手機／開無痕時點一下自動帶入金鑰）
+        </button>
+      </div>
+
+      <div class="box">
+        <div style="font-weight:800;margin-bottom:6px;">🧬 從以前寫過的貼文／Blogger 自動分析個人文風</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
+          輸入你的 Google Blogger 網址，或直接貼上 2～5 篇你以前寫過的 FB／IG 貼文，讓 Gemini 進行「五大維度逆向工程」，自動產生你的專屬風格參照檔！
+        </div>
+        <input id="blogUrlIn" class="text-in" placeholder="選填：Google Blogger 網址（如 https://xxx.blogspot.com）" value="https://jeffwang0211.blogspot.com/" />
+        <textarea id="rawPostsIn" class="text-in" style="min-height:110px;margin-top:8px;" placeholder="或直接貼上 2～5 篇你以前寫過的貼文（多篇之間可用 --- 分隔）..."></textarea>
+        <button class="btn primary block" id="btnLearnStyle" style="margin-top:8px;" onclick="learnStyleFromSamples()">
+          🧬 用 Gemini 逆向分析並更新我的文風檔
+        </button>
+      </div>
+
+      <div class="box">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+          <div style="font-weight:800;">✍️ 目前的個人風格參照檔（`style_profile`）</div>
+          <div style="display:flex;gap:6px;">
+            <input type="file" id="styleFileIn" accept=".yaml,.yml,.json" style="display:none;" onchange="importStyleFile(this.files[0]); this.value='';" />
+            <button class="btn sm" onclick="document.getElementById('styleFileIn').click()">📂 匯入檔案</button>
+            <button class="btn sm" onclick="exportStyleFile()">💾 匯出 .yaml</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">人設與語調（Persona & Tone）：</div>
+        <input id="styleToneIn" class="text-in" onchange="saveSettings()" />
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">偏好慣用詞（Preferred Terms，以逗號分隔）：</div>
+        <input id="stylePrefIn" class="text-in" onchange="saveSettings()" />
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">嚴格禁用詞（Forbidden Phrases，以逗號分隔）：</div>
+        <input id="styleForbidIn" class="text-in" onchange="saveSettings()" />
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">歷史真實貼文範例（Few-Shot Examples）：</div>
+        <textarea id="styleExIn" class="text-in" style="min-height:130px;" onchange="saveSettings()"></textarea>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav_import" onclick="goTab('import')"><span class="ico">📥</span><span>選照片</span></button>
+    <button class="nav-btn" id="nav_review" onclick="goTab('review')"><span class="ico">🖼️</span><span>挑圖確認</span></button>
+    <button class="nav-btn" id="nav_publish" onclick="goTab('publish')"><span class="ico">✨</span><span>排序＆發文</span></button>
+    <button class="nav-btn" id="nav_settings" onclick="goTab('settings')"><span class="ico">⚙️</span><span>設定＆文風</span></button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+
+    // ==================== 全域狀態 ====================
+    const APP = {
+      trip: "週末小旅行",
+      tripNote: "",
+      batch: 0,
+      photos: [], // { id, file, name, takenAt, dhash, blur, dark, bright, quality, cluster, burstGroup, status, rejectReason, origin, locked, dismissed, warnings, aiReason, thumbUrl }
+      clusters: [],
+      orders: { shared: [], ig: null, fb: null, threads: null, aiSuggested: [] },
+      plat: "ig",
+      stageIdx: 0,
+      activeVar: "narrative",
+      captions: {
+        narrative: { label: "敘事生活版", ig: "", fb: "", threads: "" },
+        short: { label: "精簡短版", ig: "", fb: "", threads: "" },
+        humor: { label: "幽默自嘲版", ig: "", fb: "", threads: "" }
+      }
+    };
+
+    // 注意：公開於 GitHub Pages 時，原始碼內不放私密金鑰（避免被 GitHub 掃描撤銷）；金鑰儲存於瀏覽器本機 localStorage
+    const DEFAULT_SETTINGS = {
+      settingsVersion: 3,
+      geminiKey: "",
+      tgToken: "",
+      tgChatId: "",
+      tone: "親切接地氣、帶微幽默與自嘲、重生活細節；每篇貼文必須自然穿插 3~5 個貼合情境的 Emoji 表情符號（如 😛、😂、✨、☀️、🙌、🥾、🍽️、🤣），適度在句尾加上哈！、囉！、唷！",
+      preferred: "滿舒服的, 結果真的還不錯耶, 哈！, 囧, 推薦大家可以, 很爽, 唷！, 囉！",
+      forbidden: "靈魂的洗禮, 歲月靜好, 踏上一場未知的冒險, 每一刻都值得被珍惜, 讓我們一起..., 一場視覺與味蕾的饗宴",
+      examples: "第六天的早上我們要搭車去四天王寺，就前往難波站想搭御堂筋線直達天王寺站，但是卻遇到了有地鐵意外囧 😅 御堂筋線的入口整個塞爆，禁止進入，所以我們等了一下就轉往千日前線搭到谷町九丁目站後轉谷町線坐一站到四天王寺前夕陽丘站下車，再步行幾分鐘就到囉！✨\n\n---\n飽足後就前往通天閣去逛了 🚶‍♂️ 沒想到嘉彣對比利肯深深著迷，還買了一隻娃娃回台灣，這就是眼緣吧 😛 而四樓有放八個神明像，在這個樓層就能看到不錯的景，還能看到很高很高~~的阿倍野大樓唷！🙌"
+    };
+
+    let SETTINGS = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem("picorganize_settings") || "{}"));
+    if ((SETTINGS.settingsVersion || 0) < 3) {
+      SETTINGS.settingsVersion = 3;
+      SETTINGS.tone = DEFAULT_SETTINGS.tone;
+      SETTINGS.preferred = DEFAULT_SETTINGS.preferred;
+      SETTINGS.forbidden = DEFAULT_SETTINGS.forbidden;
+      SETTINGS.examples = DEFAULT_SETTINGS.examples;
+      localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
+    }
+
+    // 1. 支援從網址 #key=...&tg=...&chat=... 一次性匯入金鑰並自動清除網址列（不會傳送到任何伺服器）
+    if (window.location.hash.length > 1) {
+      const hp = new URLSearchParams(window.location.hash.slice(1));
+      let changed = false;
+      if (hp.get("key")) { SETTINGS.geminiKey = hp.get("key"); changed = true; }
+      if (hp.get("tg")) { SETTINGS.tgToken = hp.get("tg"); changed = true; }
+      if (hp.get("chat")) { SETTINGS.tgChatId = hp.get("chat"); changed = true; }
+      if (changed) {
+        localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
+
+    // 2. 若在本機伺服器開啟且尚未填寫金鑰，自動從本機 /api/client-config 帶入
+    if (!SETTINGS.geminiKey || !SETTINGS.tgToken) {
+      fetch("/api/client-config").then(r => r.ok ? r.json() : null).then(cfg => {
+        if (!cfg) return;
+        if (!SETTINGS.geminiKey && cfg.geminiKey) SETTINGS.geminiKey = cfg.geminiKey;
+        if (!SETTINGS.tgToken && cfg.tgToken) SETTINGS.tgToken = cfg.tgToken;
+        if (!SETTINGS.tgChatId && cfg.tgChatId) SETTINGS.tgChatId = cfg.tgChatId;
+        localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
+        initSettingsUI();
+      }).catch(() => {});
+    }
+    let reviewSortable = null;
+    let publishSortable = null;
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(el._t);
+      el._t = setTimeout(() => { el.style.display = "none"; }, 2600);
+    }
+
+    function initSettingsUI() {
+      document.getElementById("geminiKeyIn").value = SETTINGS.geminiKey || "";
+      document.getElementById("tgTokenIn").value = SETTINGS.tgToken || "";
+      document.getElementById("tgChatIn").value = SETTINGS.tgChatId || "";
+      document.getElementById("styleToneIn").value = SETTINGS.tone || "";
+      document.getElementById("stylePrefIn").value = SETTINGS.preferred || "";
+      document.getElementById("styleForbidIn").value = SETTINGS.forbidden || "";
+      document.getElementById("styleExIn").value = SETTINGS.examples || "";
+    }
+
+    function saveSettings() {
+      SETTINGS.geminiKey = document.getElementById("geminiKeyIn").value.trim();
+      SETTINGS.tgToken = document.getElementById("tgTokenIn").value.trim();
+      SETTINGS.tgChatId = document.getElementById("tgChatIn").value.trim();
+      SETTINGS.tone = document.getElementById("styleToneIn").value.trim();
+      SETTINGS.preferred = document.getElementById("stylePrefIn").value.trim();
+      SETTINGS.forbidden = document.getElementById("styleForbidIn").value.trim();
+      SETTINGS.examples = document.getElementById("styleExIn").value.trim();
+      localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
+      toast("✅ 設定已儲存於手機本機");
+    }
+
+    function goTab(name) {
+      ["import", "review", "publish", "settings"].forEach(t => {
+        document.getElementById(`tab_${t}`).style.display = t === name ? "block" : "none";
+        document.getElementById(`nav_${t}`).classList.toggle("active", t === name);
+      });
+      if (name === "review") renderReview();
+      if (name === "publish") renderPublish();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateHeader() {
+      document.getElementById("hdrTrip").textContent = APP.trip;
+      const sel = APP.photos.filter(p => p.status === "selected").length;
+      const locked = APP.photos.filter(p => p.locked).length;
+      document.getElementById("hdrStat").textContent =
+        APP.photos.length ? `共 ${APP.photos.length} 張｜已選 ${sel} (🔒${locked})` : "尚未選取照片";
+    }
+
+    // ==================== 手機本機 EXIF 時間讀取與影像快篩 ====================
+    async function extractExifTime(file) {
+      try {
+        const slice = await file.slice(0, 65536).arrayBuffer();
+        const str = new TextDecoder("ascii", { fatal: false }).decode(new Uint8Array(slice));
+        const m = str.match(/(20\d{2}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+        if (m) {
+          return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]), Number(m[6]));
+        }
+      } catch (e) {}
+      // 檔名時間推測（PXL_YYYYMMDD_HHMMSS 或 13 位毫秒）
+      const pxl = file.name.match(/PXL_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
+      if (pxl) {
+        return new Date(Date.UTC(Number(pxl[1]), Number(pxl[2]) - 1, Number(pxl[3]), Number(pxl[4]), Number(pxl[5]), Number(pxl[6])));
+      }
+      const ms = file.name.match(/(?<!\d)(1[5-9]\d{11})(?!\d)/);
+      if (ms) return new Date(Number(ms[1]));
+      return new Date(file.lastModified || Date.now());
+    }
+
+    async function analyzeFileOnPhone(file) {
+      const bmp = await createImageBitmap(file);
+      const maxSide = 512;
+      const scale = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+      const w = Math.max(16, Math.round(bmp.width * scale));
+      const h = Math.max(16, Math.round(bmp.height * scale));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(bmp, 0, 0, w, h);
+      const thumbUrl = canvas.toDataURL("image/jpeg", 0.82);
+
+      const imgData = ctx.getImageData(0, 0, w, h).data;
+      const gray = new Float32Array(w * h);
+      let darkCnt = 0, brightCnt = 0;
+      for (let i = 0, j = 0; i < imgData.length; i += 4, j++) {
+        const g = 0.299 * imgData[i] + 0.587 * imgData[i + 1] + 0.114 * imgData[i + 2];
+        gray[j] = g;
+        if (g < 15) darkCnt++;
+        if (g > 245) brightCnt++;
+      }
+
+      // Laplacian 方差模糊度
+      let sum = 0, sumSq = 0, cnt = 0;
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const idx = y * w + x;
+          const lap = -4 * gray[idx] + gray[idx - 1] + gray[idx + 1] + gray[idx - w] + gray[idx + w];
+          sum += lap;
+          sumSq += lap * lap;
+          cnt++;
+        }
+      }
+      const mean = sum / (cnt || 1);
+      const blur = Math.max(0, Math.round((sumSq / (cnt || 1) - mean * mean) * 10) / 10);
+
+      // 64-bit 差值雜湊 dHash（9x8）
+      const hc = document.createElement("canvas");
+      hc.width = 9;
+      hc.height = 8;
+      const hctx = hc.getContext("2d");
+      hctx.drawImage(canvas, 0, 0, 9, 8);
+      const hd = hctx.getImageData(0, 0, 9, 8).data;
+      let bits = "";
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const i1 = (r * 9 + c) * 4;
+          const i2 = (r * 9 + c + 1) * 4;
+          const g1 = hd[i1] * 0.3 + hd[i1 + 1] * 0.59 + hd[i1 + 2] * 0.11;
+          const g2 = hd[i2] * 0.3 + hd[i2 + 1] * 0.59 + hd[i2 + 2] * 0.11;
+          bits += g1 < g2 ? "1" : "0";
+        }
+      }
+      if (bmp.close) bmp.close();
+      return {
+        blur,
+        dark: darkCnt / (w * h),
+        bright: brightCnt / (w * h),
+        dhash: bits,
+        thumbUrl
+      };
+    }
+
+    function hamming(a, b) {
+      if (!a || !b || a.length !== b.length) return 64;
+      let d = 0;
+      for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++;
+      return d;
+    }
+
+    async function handleFiles(fileList, origin) {
+      const files = Array.from(fileList || []).filter(f => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name));
+      if (!files.length) return;
+
+      APP.batch += 1;
+      const curBatch = APP.batch;
+      const wrap = document.getElementById("progWrap");
+      const fill = document.getElementById("progFill");
+      const num = document.getElementById("progNum");
+      const txt = document.getElementById("progText");
+      wrap.style.display = "block";
+
+      const existingKeys = new Set(APP.photos.map(p => `${p.name}_${p.file.size}`));
+      let added = 0, skipped = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        txt.textContent = origin === "manual" ? "正在加入並鎖定必選照片..." : "正在手機本機計算清晰度與去重...";
+        num.textContent = `${i + 1} / ${files.length}`;
+        fill.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+
+        const key = `${f.name}_${f.size}`;
+        if (existingKeys.has(key)) {
+          skipped++;
+          continue;
+        }
+        try {
+          const takenAt = await extractExifTime(f);
+          const feat = await analyzeFileOnPhone(f);
+          const pid = `p_${takenAt.getTime()}_${Math.random().toString(36).slice(2, 6)}`;
+          APP.photos.push({
+            id: pid,
+            file: f,
+            name: f.name,
+            batch: curBatch,
+            takenAt,
+            dhash: feat.dhash,
+            blur: feat.blur,
+            dark: feat.dark,
+            bright: feat.bright,
+            quality: 0.5,
+            cluster: "spot-01",
+            burstGroup: null,
+            status: origin === "manual" ? "selected" : "candidate",
+            rejectReason: null,
+            origin,
+            locked: origin === "manual",
+            dismissed: false,
+            warnings: [],
+            aiReason: origin === "manual" ? "手動指定必選 🔒" : "",
+            thumbUrl: feat.thumbUrl
+          });
+          existingKeys.add(key);
+          added++;
+        } catch (e) {
+          console.warn("略過無法解析的檔案:", f.name, e);
+        }
+      }
+
+      runLocalFilter();
+      if (origin === "auto") {
+        reselectLocal(false);
+      } else {
+        syncOrders();
+      }
+      buildLocalCaptions();
+      wrap.style.display = "none";
+      updateHeader();
+      toast(`✅ 新增 ${added} 張（略過重複 ${skipped} 張）`);
+      goTab("review");
+      if (SETTINGS.geminiKey && APP.photos.length) {
+        runGeminiCaptionsOnly();
+      }
+    }
+
+    function runLocalFilter() {
+      APP.photos.sort((a, b) => a.takenAt - b.takenAt);
+      if (!APP.photos.length) return;
+
+      // 1. 依 40 分鐘切分時段群組
+      const groups = [[APP.photos[0]]];
+      for (let i = 1; i < APP.photos.length; i++) {
+        const p = APP.photos[i];
+        const prev = groups[groups.length - 1][groups[groups.length - 1].length - 1];
+        if ((p.takenAt - prev.takenAt) > 40 * 60 * 1000) groups.push([p]);
+        else groups[groups.length - 1].push(p);
+      }
+      APP.clusters = groups.map((g, idx) => {
+        const cid = `spot-${String(idx + 1).padStart(2, "0")}`;
+        g.forEach(p => { p.cluster = cid; });
+        return { id: cid, start: g[0].takenAt, end: g[g.length - 1].takenAt, count: g.length };
+      });
+
+      // 2. 各群組內計算相對模糊門檻（淘汰後 25%）與綜合品質分數
+      const cutoffs = {};
+      groups.forEach((g, idx) => {
+        const cid = `spot-${String(idx + 1).padStart(2, "0")}`;
+        const blurs = g.map(p => p.blur).sort((a, b) => a - b);
+        cutoffs[cid] = blurs.length >= 4 ? blurs[Math.max(0, Math.floor(blurs.length * 0.25) - 1)] : -1;
+        const minB = blurs[0] || 0;
+        const span = (blurs[blurs.length - 1] - minB) || 1;
+        g.forEach(p => {
+          const bNorm = (p.blur - minB) / span;
+          const pen = Math.max(0, p.dark - 0.15) + Math.max(0, p.bright - 0.15);
+          p.quality = Math.round(Math.max(0, Math.min(1, bNorm - pen * 0.5)) * 100) / 100;
+        });
+      });
+
+      // 3. 連拍分組（只針對非鎖定照片）
+      const autoList = APP.photos.filter(p => !p.locked);
+      APP.photos.forEach(p => { p.burstGroup = null; });
+      const visited = new Set();
+      const winners = {};
+      let bIdx = 0;
+      for (let i = 0; i < autoList.length; i++) {
+        const p = autoList[i];
+        if (visited.has(p.id)) continue;
+        const grp = [p];
+        visited.add(p.id);
+        for (let j = i + 1; j < autoList.length; j++) {
+          const q = autoList[j];
+          if ((q.takenAt - grp[grp.length - 1].takenAt) > 10000) break;
+          if (grp.some(g => hamming(q.dhash, g.dhash) <= 10)) {
+            grp.push(q);
+            visited.add(q.id);
+          }
+        }
+        if (grp.length > 1) {
+          bIdx++;
+          const gid = `g${bIdx}`;
+          grp.forEach(g => { g.burstGroup = gid; });
+          winners[gid] = grp.reduce((best, cur) => (cur.blur > best.blur ? cur : best), grp[0]).id;
+        }
+      }
+
+      // 4. 狀態判定（鎖定照片一律保留並寫入 warnings）
+      APP.photos.forEach(p => {
+        p.warnings = [];
+        const isBlur = p.blur <= (cutoffs[p.cluster] ?? -1);
+        const isExp = p.dark > 0.35 || p.bright > 0.35;
+        const isDup = Boolean(p.burstGroup && winners[p.burstGroup] !== p.id);
+
+        if (p.locked) {
+          p.status = "selected";
+          p.rejectReason = null;
+          if (isBlur) p.warnings.push("略模糊（已鎖定保留）");
+          if (isExp) p.warnings.push("曝光極端（已鎖定保留）");
+          const sim = APP.photos.find(o => o.id !== p.id && Math.abs(o.takenAt - p.takenAt) <= 600000 && hamming(o.dhash, p.dhash) <= 10);
+          if (sim) p.warnings.push("與其他照片相似（兩張皆保留）");
+          return;
+        }
+        if (isDup) { p.status = "rejected"; p.rejectReason = "連拍相似"; }
+        else if (isExp) { p.status = "rejected"; p.rejectReason = "過曝／過暗"; }
+        else if (isBlur) { p.status = "rejected"; p.rejectReason = "模糊淘汰"; }
+        else {
+          p.rejectReason = null;
+          if (p.status !== "selected") p.status = "candidate";
+        }
+      });
+      syncOrders();
+    }
+
+    function syncOrders() {
+      const selSet = new Set(APP.photos.filter(p => p.status === "selected").map(p => p.id));
+      const byTime = APP.photos.filter(p => selSet.has(p.id)).map(p => p.id);
+      const fix = (arr) => {
+        const kept = (arr || []).filter(id => selSet.has(id));
+        byTime.forEach(id => { if (!kept.includes(id)) kept.push(id); });
+        return kept;
+      };
+      APP.orders.shared = fix(APP.orders.shared);
+      ["ig", "fb", "threads"].forEach(k => {
+        if (Array.isArray(APP.orders[k])) APP.orders[k] = fix(APP.orders[k]);
+      });
+    }
+
+    function reselectLocal(dismissCurrent) {
+      if (dismissCurrent) {
+        APP.photos.forEach(p => {
+          if (p.status === "selected" && !p.locked) p.dismissed = true;
+        });
+      }
+      const locked = APP.photos.filter(p => p.locked);
+      locked.forEach(p => { p.status = "selected"; });
+      APP.photos.forEach(p => { if (!p.locked && p.status === "selected") p.status = "candidate"; });
+
+      const target = Math.min(20, Math.max(8, locked.length));
+      const need = Math.max(0, target - locked.length);
+      let pool = APP.photos.filter(p => p.status === "candidate" && !p.locked && !p.dismissed);
+      if (pool.length < need) {
+        APP.photos.forEach(p => { if (!p.locked) p.dismissed = false; });
+        pool = APP.photos.filter(p => p.status === "candidate" && !p.locked);
+      }
+
+      // 依時段平均挑選最高分且不相似的照片
+      const picked = [];
+      const cids = APP.clusters.map(c => c.id);
+      const used = new Set(locked.map(p => p.id));
+      while (picked.length < need) {
+        let added = false;
+        for (const cid of cids) {
+          if (picked.length >= need) break;
+          const sub = pool.filter(p => p.cluster === cid && !used.has(p.id));
+          if (!sub.length) continue;
+          sub.sort((a, b) => b.quality - a.quality || b.blur - a.blur);
+          const best = sub[0];
+          best.status = "selected";
+          best.aiReason = `${cid} 高畫質代表照（品質 ${best.quality}）`;
+          picked.push(best);
+          used.add(best.id);
+          added = true;
+        }
+        if (!added) break;
+      }
+
+      const finalIds = [...locked, ...picked].sort((a, b) => a.takenAt - b.takenAt).map(p => p.id);
+      APP.orders.aiSuggested = finalIds;
+      APP.orders.shared = [...finalIds];
+      syncOrders();
+      updateHeader();
+      renderReview();
+      if (dismissCurrent) toast("🔄 已換一批照片（🔒 鎖定照片全數保留）");
+    }
+
+    // ==================== 挑圖與排序介面 ====================
+    function fmtTime(d) {
+      return d.toTimeString().slice(0, 8);
+    }
+
+    function curPlatOrder() {
+      return APP.orders[APP.plat] || APP.orders.shared || [];
+    }
+
+    function buildStripHTML(ids, mode) {
+      return ids.map((id, idx) => {
+        const p = APP.photos.find(x => x.id === id);
+        if (!p) return "";
+        return `
+          <div class="strip-item" data-id="${p.id}" onclick="onStripTap(${idx})">
+            <img src="${p.thumbUrl}" alt="${p.name}" />
+            <span class="num-badge">#${idx + 1}${idx === 0 ? ' 封面' : ''}</span>
+            <button class="rm-btn" onclick="event.stopPropagation(); toggleSelect('${p.id}', false)">✕</button>
+            <div class="move-bar" onclick="event.stopPropagation();">
+              <button onclick="nudgeOrder('${mode}', ${idx}, -1)">◀</button>
+              <span>${p.locked ? '🔒' : '拖曳'}</span>
+              <button onclick="nudgeOrder('${mode}', ${idx}, 1)">▶</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function nudgeOrder(mode, idx, delta) {
+      const indep = mode === "publish" && document.getElementById("indepChk").checked;
+      const key = indep ? APP.plat : "shared";
+      const arr = [...(APP.orders[key] || APP.orders.shared)];
+      const target = idx + delta;
+      if (target < 0 || target >= arr.length) return;
+      const [item] = arr.splice(idx, 1);
+      arr.splice(target, 0, item);
+      APP.orders[key] = arr;
+      if (mode === "review") renderReview();
+      else { APP.stageIdx = target; renderPublish(); }
+    }
+
+    function toggleSelect(id, select) {
+      const p = APP.photos.find(x => x.id === id);
+      if (!p) return;
+      if (select) {
+        p.status = "selected";
+        p.origin = "manual";
+        p.locked = true;
+        p.dismissed = false;
+        p.rejectReason = null;
+        if (!p.aiReason) p.aiReason = "手動選取並鎖定 🔒";
+      } else {
+        p.locked = false;
+        p.dismissed = true;
+        p.status = "candidate";
+      }
+      syncOrders();
+      updateHeader();
+      renderReview();
+      renderPublish();
+      toast(select ? "🔒 已加入並鎖定（絕不淘汰）" : "已移除選取");
+    }
+
+    function renderCardHTML(p) {
+      const isNew = APP.batch > 1 && p.batch === APP.batch;
+      const warns = (p.warnings || []).map(w => `<div class="chip-warn">⚠️ ${w}</div>`).join("");
+      const rej = p.rejectReason ? `<div class="chip-warn">${p.rejectReason}</div>` : "";
+      return `
+        <div class="p-card ${p.status === 'selected' ? 'selected' : ''}" onclick="toggleSelect('${p.id}', ${p.status !== 'selected'})">
+          <img src="${p.thumbUrl}" loading="lazy" />
+          ${p.locked ? '<span class="chip-lock">🔒 鎖定</span>' : ''}
+          ${isNew ? '<span class="chip-new">NEW</span>' : ''}
+          <div class="p-info">
+            <div>${fmtTime(p.takenAt)}｜清晰 ${p.blur}</div>
+            ${p.aiReason ? `<div class="p-reason">✨ ${p.aiReason}</div>` : ''}
+            ${warns}${rej}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReview() {
+      const strip = document.getElementById("reviewStrip");
+      strip.innerHTML = buildStripHTML(APP.orders.shared, "review");
+      if (reviewSortable) reviewSortable.destroy();
+      reviewSortable = new Sortable(strip, {
+        animation: 150,
+        delay: 140,
+        delayOnTouchOnly: true,
+        onEnd: () => {
+          APP.orders.shared = Array.from(strip.querySelectorAll(".strip-item")).map(el => el.dataset.id);
+          renderReview();
+          toast("已更新輪播順序");
+        }
+      });
+
+      const onlyNew = document.getElementById("onlyNewChk").checked;
+      const wrap = document.getElementById("clustersWrap");
+      wrap.innerHTML = APP.clusters.map(c => {
+        const list = APP.photos.filter(p => p.cluster === c.id && p.status !== "rejected" && (!onlyNew || p.batch === APP.batch));
+        if (!list.length) return "";
+        return `
+          <div class="box">
+            <div style="font-weight:800;font-size:13px;margin-bottom:8px;">
+              📍 ${c.id}（${fmtTime(c.start).slice(0,5)} ~ ${fmtTime(c.end).slice(0,5)}，候選 ${list.length} 張）
+            </div>
+            <div class="photo-grid">${list.map(renderCardHTML).join("")}</div>
+          </div>
+        `;
+      }).join("");
+
+      const rej = APP.photos.filter(p => p.status === "rejected" && (!onlyNew || p.batch === APP.batch));
+      document.getElementById("rejSummary").textContent = `展開「已淘汰照片」（共 ${rej.length} 張，點一下即可救回並鎖定 🔒）`;
+      document.getElementById("rejGrid").innerHTML = rej.map(renderCardHTML).join("");
+    }
+
+    function setPlat(plat) {
+      APP.plat = plat;
+      APP.stageIdx = 0;
+      ["ig", "fb", "threads"].forEach(k => {
+        document.getElementById(`pbtn_${k}`).classList.toggle("active", k === plat);
+      });
+      renderPublish();
+    }
+
+    function toggleIndep() {
+      const indep = document.getElementById("indepChk").checked;
+      APP.orders[APP.plat] = indep ? [...curPlatOrder()] : null;
+      renderPublish();
+      toast(indep ? `已啟用 ${APP.plat.toUpperCase()} 獨立排序` : "已改為共用順序");
+    }
+
+    function onStripTap(idx) {
+      APP.stageIdx = idx;
+      renderPublish();
+    }
+
+    function stepStage(delta) {
+      const ids = curPlatOrder();
+      if (!ids.length) return;
+      APP.stageIdx = (APP.stageIdx + delta + ids.length) % ids.length;
+      renderPublish();
+    }
+
+    function renderPublish() {
+      const ids = curPlatOrder();
+      if (APP.stageIdx >= ids.length) APP.stageIdx = 0;
+      document.getElementById("indepChk").checked = Array.isArray(APP.orders[APP.plat]);
+
+      const curP = APP.photos.find(x => x.id === ids[APP.stageIdx]);
+      document.getElementById("stageImg").src = curP ? curP.thumbUrl : "";
+      document.getElementById("stageTitle").textContent =
+        `${APP.plat.toUpperCase()} 預覽（第 ${ids.length ? APP.stageIdx + 1 : 0} / ${ids.length} 張）`;
+
+      const strip = document.getElementById("publishStrip");
+      strip.innerHTML = buildStripHTML(ids, "publish");
+      if (publishSortable) publishSortable.destroy();
+      publishSortable = new Sortable(strip, {
+        animation: 150,
+        delay: 140,
+        delayOnTouchOnly: true,
+        onEnd: () => {
+          const newIds = Array.from(strip.querySelectorAll(".strip-item")).map(el => el.dataset.id);
+          if (document.getElementById("indepChk").checked) APP.orders[APP.plat] = newIds;
+          else APP.orders.shared = newIds;
+          APP.stageIdx = 0;
+          renderPublish();
+          toast("✅ 貼文照片順序已更新！");
+        }
+      });
+
+      const v = APP.captions[APP.activeVar] || {};
+      document.getElementById("capBox").value = v[APP.plat] || "";
+    }
+
+    function onVarChange() {
+      APP.activeVar = document.getElementById("varSel").value;
+      renderPublish();
+    }
+
+    function saveCurCaption() {
+      APP.captions[APP.activeVar][APP.plat] = document.getElementById("capBox").value;
+    }
+
+    // ==================== 離線模板文案與 Gemini 多模態 AI ====================
+    function buildLocalCaptions() {
+      const ids = APP.orders.shared;
+      const sel = ids.map(id => APP.photos.find(p => p.id === id)).filter(Boolean);
+      const note = APP.tripNote ? `（${APP.tripNote}）` : "";
+      const tag = APP.trip.replace(/[-\s_]/g, "");
+      const waitingHint = SETTINGS.geminiKey ? "⏳ 正在請 Gemini 看照片細節撰寫專屬文案（約 3~5 秒）...\n\n" : "";
+
+      APP.captions.narrative = {
+        label: "敘事生活版",
+        fb: `${waitingHint}📍 ${APP.trip}${note}\n\n挑了這趟最喜歡的 ${sel.length} 張畫面留個紀錄，老實說整理照片的時候又想再出門一趟了。\n\n#${tag} #日常紀錄 #生活碎片`,
+        ig: `${waitingHint}${APP.trip}${note} ✨\n往左滑看這次最喜歡的 ${sel.length} 個畫面 👉\n\n#${tag} #日常紀錄 #生活感 #隨手拍`,
+        threads: `${waitingHint}${APP.trip}${note} 的 ${sel.length} 個瞬間，老實說這趟真的很值得。`
+      };
+      APP.captions.short = {
+        label: "精簡短版",
+        fb: `${waitingHint}${APP.trip}${note}｜${sel.length} pics\n\n#${tag} #日常紀錄`,
+        ig: `${waitingHint}把喜歡的瞬間都收進相簿裡 ✨（${APP.trip}，${sel.length} pics）\n\n#${tag} #生活碎片 #隨手拍`,
+        threads: `${waitingHint}${APP.trip} 紀錄 ✔️`
+      };
+      APP.captions.humor = {
+        label: "幽默自嘲版",
+        fb: `${waitingHint}${APP.trip}${note}\n原本只是想說隨便拍拍，結果默默還是按了一堆快門，挑出這 ${sel.length} 張精華跟大家分享。\n\n#${tag} #週末日常 #記憶體殺手`,
+        ig: `${waitingHint}出門前說不特別拍照，結果相簿又默默多了一整排 😂\n精選 ${sel.length} 張 ${APP.trip} 現場實況 👉\n\n#${tag} #日常碎念 #週末去哪裡`,
+        threads: `${waitingHint}每次出門都說隨便逛逛，結果手機相簿又差點爆掉 😂`
+      };
+      renderPublish();
+    }
+
+    async function callGeminiFast(parts) {
+      const models = ["gemini-flash-lite-latest", "gemini-3-flash-preview", "gemini-3.5-flash"];
+      let lastErr = "";
+      for (const mName of models) {
+        const resp = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${mName}:generateContent?key=${encodeURIComponent(SETTINGS.geminiKey)}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts }],
+              generationConfig: {
+                responseMimeType: "application/json",
+                thinkingConfig: { thinkingLevel: "LOW" }
+              }
+            })
+          }
+        );
+        if (resp.ok) {
+          const data = await resp.json();
+          const rawText = data.candidates?.[0]?.content?.parts?.find(p => p.text)?.text || "{}";
+          return JSON.parse(rawText);
+        }
+        lastErr = `${mName}: HTTP ${resp.status}`;
+      }
+      throw new Error(`Gemini API 呼叫失敗 (${lastErr})`);
+    }
+
+    async function runGeminiCurate() {
+      if (!SETTINGS.geminiKey) {
+        toast("尚未填寫 Gemini API Key，請先到設定頁填寫");
+        goTab("settings");
+        return;
+      }
+      if (!APP.photos.length) { toast("請先選取照片"); return; }
+
+      toast("⏳ AI 正在看圖挑選 8 張並撰寫文案（約 3~5 秒）...");
+      const locked = APP.photos.filter(p => p.locked);
+      const cands = APP.photos
+        .filter(p => p.status !== "rejected" && !p.locked && !p.dismissed)
+        .sort((a, b) => b.quality - a.quality)
+        .slice(0, 12);
+      const pool = [...locked, ...cands];
+
+      const parts = [{
+        text: `你是社群影像編輯與個人風格寫手。
+主題／旅程名稱：${APP.trip}
+補充備註：${APP.tripNote || "無"}
+已鎖定必選照片 ID（絕對不可替換，必須全部保留在 selected 清單內）：${JSON.stringify(locked.map(p => p.id))}
+
+個人文風規則：
+- 語調：${SETTINGS.tone}
+- 慣用詞：${SETTINGS.preferred}
+- 嚴格禁用詞：${SETTINGS.forbidden}
+- 真實貼文範例（只學習語氣與節奏，切勿照抄範例裡的熱炒、爬山等無關主題）：
+${SETTINGS.examples}
+
+請仔細觀察以下照片縮圖的真實內容（例如：食物、餐廳、街景、室內、人物表情、風景、寵物或日常物品，照片拍什麼就寫什麼，若不是爬山千萬不要寫爬山），挑出最具代表性、構圖多元的 8 張照片（必須包含所有已鎖定照片），並撰寫 3 個版本（narrative / short / humor）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
+【強制規定】：每一篇貼文（fb、ig、threads）都必須自然穿插 3～5 個貼合畫面與語氣的 Emoji 表情符號（如 😛、😂、😅、✨、☀️、🙌、🥾、🍽️、🤣），絕不可完全沒有表情符號！請勿捏造假網址。
+請嚴格只回傳 JSON：
+{
+  "selected": [{"id": "照片ID", "reason": "挑選理由（15字內）"}],
+  "captions": {
+    "narrative": {"fb": "...", "ig": "...", "threads": "..."},
+    "short": {"fb": "...", "ig": "...", "threads": "..."},
+    "humor": {"fb": "...", "ig": "...", "threads": "..."}
+  }
+}`
+      }];
+
+      for (const p of pool) {
+        parts.push({ text: `照片 ID: ${p.id} (時間 ${fmtTime(p.takenAt)}, 鎖定=${p.locked})` });
+        parts.push({
+          inline_data: { mime_type: "image/jpeg", data: p.thumbUrl.split(",")[1] }
+        });
+      }
+
+      try {
+        const parsed = await callGeminiFast(parts);
+        APP.photos.forEach(p => { if (!p.locked && p.status === "selected") p.status = "candidate"; });
+        const ordered = [];
+        (parsed.selected || []).forEach(item => {
+          const p = APP.photos.find(x => x.id === item.id);
+          if (p) {
+            p.status = "selected";
+            if (item.reason) p.aiReason = item.reason;
+            if (!ordered.includes(p.id)) ordered.push(p.id);
+          }
+        });
+        locked.forEach(p => {
+          p.status = "selected";
+          if (!ordered.includes(p.id)) ordered.push(p.id);
+        });
+        APP.orders.shared = ordered;
+        syncOrders();
+
+        if (parsed.captions) {
+          ["narrative", "short", "humor"].forEach(k => {
+            if (parsed.captions[k]) APP.captions[k] = Object.assign(APP.captions[k] || {}, parsed.captions[k]);
+          });
+        }
+        updateHeader();
+        renderReview();
+        renderPublish();
+        toast("🎉 AI 挑圖與專屬文案產出完成！");
+      } catch (e) {
+        alert("呼叫 Gemini 失敗：" + e.message);
+      }
+    }
+
+    async function runGeminiCaptionsOnly() {
+      if (!SETTINGS.geminiKey) {
+        toast("尚未填寫 Gemini API Key，請先到設定頁填寫");
+        goTab("settings");
+        return;
+      }
+      const ids = curPlatOrder();
+      const selPhotos = ids.map(id => APP.photos.find(x => x.id === id)).filter(Boolean);
+      if (!selPhotos.length) { toast("請先選取至少 1 張照片"); return; }
+
+      const btn = document.getElementById("btnGenCap");
+      const capBox = document.getElementById("capBox");
+      if (btn) { btn.disabled = true; btn.textContent = "⏳ AI 看圖撰寫中..."; }
+      capBox.value = "⏳ Gemini 正在根據你目前選取的照片畫面撰寫貼文（約 2~4 秒）...";
+      toast("⏳ 正在根據已選照片畫面重寫文案...");
+
+      const parts = [{
+        text: `你是個人風格社群寫手。
+主題／旅程名稱：${APP.trip}
+補充備註：${APP.tripNote || "無"}
+
+個人文風規則：
+- 語調：${SETTINGS.tone}
+- 慣用詞：${SETTINGS.preferred}
+- 嚴格禁用詞：${SETTINGS.forbidden}
+- 真實貼文範例（只學習語氣與分段節奏，切勿照抄範例裡的熱炒或爬山等無關情境）：
+${SETTINGS.examples}
+
+請仔細觀察以下 ${selPhotos.length} 張已選照片的真實畫面細節（照片裡是什麼主題就寫什麼主題：例如美食、聚餐、街拍、旅遊、室內活動、風景等），撰寫 3 個不同切入角度的版本（narrative 敘事生活版 / short 精簡短版 / humor 幽默自嘲版）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
+【強制規定】：每一篇貼文（fb、ig、threads）都必須自然穿插 3～5 個貼合畫面與語氣的 Emoji 表情符號（如 😛、😂、😅、✨、☀️、🙌、🥾、🍽️、🤣），絕不可完全沒有表情符號！請勿捏造假網址。
+請嚴格只回傳 JSON：
+{
+  "captions": {
+    "narrative": {"fb": "...", "ig": "...", "threads": "..."},
+    "short": {"fb": "...", "ig": "...", "threads": "..."},
+    "humor": {"fb": "...", "ig": "...", "threads": "..."}
+  }
+}`
+      }];
+
+      for (let i = 0; i < selPhotos.length; i++) {
+        const p = selPhotos[i];
+        parts.push({ text: `第 ${i + 1} 張照片 (${fmtTime(p.takenAt)})：` });
+        parts.push({
+          inline_data: { mime_type: "image/jpeg", data: p.thumbUrl.split(",")[1] }
+        });
+      }
+
+      try {
+        const parsed = await callGeminiFast(parts);
+        if (parsed.captions) {
+          ["narrative", "short", "humor"].forEach(k => {
+            if (parsed.captions[k]) APP.captions[k] = Object.assign(APP.captions[k] || {}, parsed.captions[k]);
+          });
+        }
+        renderPublish();
+        toast("✨ 文案已依目前照片畫面更新！");
+      } catch (e) {
+        alert("呼叫 Gemini 失敗：" + e.message);
+        renderPublish();
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = "✨ AI 看圖重寫文案"; }
+      }
+    }
+
+    // ==================== 匯出無 GPS 成品照、原生分享與 Telegram ====================
+    async function renderCleanBlob(photo, platform, index) {
+      const bmp = await createImageBitmap(photo.file);
+      let tw = bmp.width, th = bmp.height;
+      let sx = 0, sy = 0, sw = bmp.width, sh = bmp.height;
+
+      if (platform === "ig") {
+        const targetRatio = 4 / 5;
+        const curRatio = sw / sh;
+        if (curRatio > targetRatio) {
+          sw = Math.round(sh * targetRatio);
+          sx = Math.round((bmp.width - sw) / 2);
+        } else {
+          sh = Math.round(sw / targetRatio);
+          sy = Math.round((bmp.height - sh) / 2);
+        }
+        tw = 1080;
+        th = 1350;
+      } else {
+        const maxSide = 2048;
+        const scale = Math.min(1, maxSide / Math.max(sw, sh));
+        tw = Math.round(sw * scale);
+        th = Math.round(sh * scale);
+      }
+
+      // 透過 Canvas 重新編碼 JPEG 會自動移除所有 GPS 與相機隱私 EXIF
+      const c = document.createElement("canvas");
+      c.width = tw;
+      c.height = th;
+      c.getContext("2d").drawImage(bmp, sx, sy, sw, sh, 0, 0, tw, th);
+      if (bmp.close) bmp.close();
+      const blob = await new Promise(res => c.toBlob(res, "image/jpeg", 0.92));
+      const fname = `${String(index).padStart(2, "0")}_${APP.trip}_${photo.id.slice(-4)}.jpg`;
+      return new File([blob], fname, { type: "image/jpeg" });
+    }
+
+    async function buildOrderedFiles(platform) {
+      const ids = curPlatOrder();
+      const files = [];
+      for (let i = 0; i < ids.length; i++) {
+        const p = APP.photos.find(x => x.id === ids[i]);
+        if (p) files.push(await renderCleanBlob(p, platform, i + 1));
+      }
+      return files;
+    }
+
+    async function copyTextOnly() {
+      const text = document.getElementById("capBox").value;
+      await navigator.clipboard.writeText(text);
+      toast("📋 文案已複製到手機剪貼簿！");
+    }
+
+    async function shareNative() {
+      const text = document.getElementById("capBox").value;
+      try { await navigator.clipboard.writeText(text); } catch (e) {}
+      toast("📋 文案已複製！正在準備無 GPS 編號照片...");
+      const files = await buildOrderedFiles(APP.plat);
+      if (navigator.canShare && navigator.canShare({ files })) {
+        try {
+          await navigator.share({ title: APP.trip, text, files });
+          return;
+        } catch (e) {}
+      }
+      await downloadExportedFiles();
+    }
+
+    async function downloadExportedFiles() {
+      toast("💾 正在依序匯出無 GPS 照片 (01 ~ N)...");
+      const files = await buildOrderedFiles(APP.plat);
+      for (const f of files) {
+        const url = URL.createObjectURL(f);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = f.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        await new Promise(r => setTimeout(r, 250));
+      }
+      toast(`✅ 已依序下載 ${files.length} 張照片！`);
+    }
+
+    async function detectTelegramChatId() {
+      const token = document.getElementById("tgTokenIn").value.trim();
+      if (!token) { alert("請先填入 Bot Token"); return; }
+      const r = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
+      const data = await r.json();
+      const list = data.result || [];
+      let cid = "";
+      for (let i = list.length - 1; i >= 0; i--) {
+        const chat = (list[i].message || list[i].edited_message || {}).chat;
+        if (chat && chat.id) { cid = String(chat.id); break; }
+      }
+      if (!cid) {
+        alert("還找不到對話紀錄！請先在 Telegram 點開 @weijie_pic_bot 按下「開始（Start）」後再點一次。");
+        return;
+      }
+      document.getElementById("tgChatIn").value = cid;
+      saveSettings();
+      toast(`✅ 已抓到 Chat ID: ${cid}`);
+    }
+
+    async function sendToTelegramMobile() {
+      if (!SETTINGS.tgToken) { goTab("settings"); alert("請先設定 Telegram Bot Token"); return; }
+      if (!SETTINGS.tgChatId) {
+        await detectTelegramChatId();
+        if (!SETTINGS.tgChatId) return;
+      }
+      toast("📤 正在傳送文案與排好順序的照片到 Telegram...");
+      const text = document.getElementById("capBox").value;
+      const header = `【${APP.plat.toUpperCase()}｜${APP.trip}】`;
+
+      for (const msg of [header, text]) {
+        if (!msg) continue;
+        await fetch(`https://api.telegram.org/bot${SETTINGS.tgToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: SETTINGS.tgChatId, text: msg })
+        });
+      }
+
+      const files = await buildOrderedFiles(APP.plat);
+      for (let start = 0; start < files.length; start += 10) {
+        const chunk = files.slice(start, start + 10);
+        const fd = new FormData();
+        fd.append("chat_id", SETTINGS.tgChatId);
+        const media = chunk.map((f, idx) => {
+          fd.append(`file${idx}`, f, f.name);
+          return { type: "document", media: `attach://file${idx}` };
+        });
+        fd.append("media", JSON.stringify(media));
+        await fetch(`https://api.telegram.org/bot${SETTINGS.tgToken}/sendMediaGroup`, {
+          method: "POST",
+          body: fd
+        });
+      }
+      toast(`✅ 已傳送 ${files.length} 張原畫質照片至 Telegram！`);
+    }
+
+    function saveToStyleProfile() {
+      const text = document.getElementById("capBox").value.trim();
+      if (!text) return;
+      SETTINGS.examples = `${SETTINGS.examples}\n\n---\n${text}`.trim();
+      document.getElementById("styleExIn").value = SETTINGS.examples;
+      localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
+      toast("⭐ 已將此篇文案加入個人風格範例！");
+    }
+
+    function fetchBloggerJsonp(blogUrl) {
+      return new Promise((resolve, reject) => {
+        let base = blogUrl.trim().replace(/\/+$/, "");
+        if (!/^https?:\/\//i.test(base)) base = "https://" + base;
+        const cbName = "_blogger_cb_" + Date.now();
+        const script = document.createElement("script");
+        const timer = setTimeout(() => {
+          delete window[cbName];
+          script.remove();
+          reject(new Error("讀取 Blogger 逾時，請確認網址是否公開"));
+        }, 12000);
+        window[cbName] = (data) => {
+          clearTimeout(timer);
+          delete window[cbName];
+          script.remove();
+          const entries = data?.feed?.entry || [];
+          const posts = entries.map(e => {
+            const title = e.title?.$t || "";
+            const html = e.content?.$t || e.summary?.$t || "";
+            const tmp = document.createElement("div");
+            tmp.innerHTML = html.replace(/<br\s*\/?>|<\/p>|<\/div>/gi, "\n");
+            return `標題：${title}\n${(tmp.textContent || "").trim().slice(0, 1200)}`;
+          }).filter(Boolean);
+          resolve(posts);
+        };
+        script.onerror = () => {
+          clearTimeout(timer);
+          delete window[cbName];
+          script.remove();
+          reject(new Error("無法連線至 Blogger Feed"));
+        };
+        script.src = `${base}/feeds/posts/default?alt=json-in-script&max-results=6&callback=${cbName}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function learnStyleFromSamples() {
+      if (!SETTINGS.geminiKey) { alert("請先在上方填寫 Gemini API Key"); return; }
+      const blogUrl = document.getElementById("blogUrlIn").value.trim();
+      const rawPosts = document.getElementById("rawPostsIn").value.trim();
+      if (!blogUrl && !rawPosts) {
+        alert("請輸入 Google Blogger 網址，或貼上至少 1 篇你以前寫過的貼文！");
+        return;
+      }
+      const btn = document.getElementById("btnLearnStyle");
+      btn.disabled = true;
+      btn.textContent = "⏳ 正在分析你的寫作風格（約 3~5 秒）...";
+      try {
+        const samples = [];
+        if (blogUrl) {
+          toast("🌐 正在抓取 Blogger 最新文章...");
+          const posts = await fetchBloggerJsonp(blogUrl);
+          samples.push(...posts);
+        }
+        if (rawPosts) {
+          samples.push(...rawPosts.split("---").map(s => s.trim()).filter(Boolean));
+        }
+        const prompt = `你是專業的個人文風逆向工程分析師。請分析以下作者本人過去撰寫的真實貼文／部落格文章，進行「五大維度逆向工程」，提取出作者專屬的寫作風格參照設定。
+
+【作者歷史文章樣本】：
+${samples.join("\n\n=== 分隔線 ===\n\n")}
+
+請嚴格只回傳 JSON（使用繁體中文台灣用語）：
+{
+  "tone": "語調、人設與段落留白習慣（例如：平實生活感、親切帶微幽默自嘲；每段 1~2 句維持留白）",
+  "preferred": ["從樣本歸納出的作者常用口頭禪或連接詞 4~8 個"],
+  "forbidden": ["靈魂的洗禮", "歲月靜好", "踏上一場未知的冒險", "每一刻都值得被珍惜", "以及與作者風格衝突的矯情詞彙"],
+  "examples": ["從樣本中擷取最具代表性的 2 段真實貼文原文"]
+}`;
+        const res = await callGeminiFast([{ text: prompt }]);
+        if (res.tone) document.getElementById("styleToneIn").value = res.tone;
+        if (Array.isArray(res.preferred)) document.getElementById("stylePrefIn").value = res.preferred.join(", ");
+        if (Array.isArray(res.forbidden)) document.getElementById("styleForbidIn").value = res.forbidden.join(", ");
+        if (Array.isArray(res.examples)) document.getElementById("styleExIn").value = res.examples.join("\n\n---\n");
+        saveSettings();
+        // 若連線的是本機後端，同步寫回電腦端的 style_profile.yaml
+        fetch("/api/style-learn", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ blog_url: blogUrl, raw_posts: rawPosts })
+        }).catch(() => {});
+        toast("🎉 已完成五大維度文風逆向工程並更新設定！");
+      } catch (e) {
+        alert("文風分析失敗：" + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🧬 用 Gemini 逆向分析並更新我的文風檔";
+      }
+    }
+
+    function exportStyleFile() {
+      saveSettings();
+      const yamlText = [
+        "persona:",
+        `  tone: ${JSON.stringify(SETTINGS.tone)}`,
+        "vocabulary_guidelines:",
+        "  preferred_terms:",
+        ...SETTINGS.preferred.split(",").map(s => s.trim()).filter(Boolean).map(s => `    - ${JSON.stringify(s)}`),
+        "  forbidden_phrases:",
+        ...SETTINGS.forbidden.split(",").map(s => s.trim()).filter(Boolean).map(s => `    - ${JSON.stringify(s)}`),
+        "few_shot_examples:",
+        ...SETTINGS.examples.split("---").map(s => s.trim()).filter(Boolean).map(s => `  - context: "歷史代表作"\n    text: |\n${s.split("\n").map(line => "      " + line).join("\n")}`)
+      ].join("\n") + "\n";
+      const blob = new Blob([yamlText], { type: "text/yaml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "style_profile.yaml";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+      toast("💾 已匯出 style_profile.yaml");
+    }
+
+    async function importStyleFile(file) {
+      if (!file) return;
+      const txt = await file.text();
+      // 簡易解析 YAML / JSON 中的欄位
+      try {
+        if (file.name.endsWith(".json")) {
+          const obj = JSON.parse(txt);
+          if (obj.tone) document.getElementById("styleToneIn").value = obj.tone;
+        } else {
+          const toneM = txt.match(/tone:\s*["']?([^"'\n]+)["']?/);
+          if (toneM) document.getElementById("styleToneIn").value = toneM[1].trim();
+        }
+        saveSettings();
+        toast("📂 已匯入風格設定檔！");
+      } catch (e) {
+        alert("匯入失敗：" + e.message);
+      }
+    }
+
+    function resetTrip() {
+      if (!confirm("確定要清空目前選取的照片嗎？")) return;
+      APP.photos = [];
+      APP.clusters = [];
+      APP.orders = { shared: [], ig: null, fb: null, threads: null, aiSuggested: [] };
+      updateHeader();
+      renderReview();
+      toast("已清空旅程照片");
+    }
+
+    function copyMagicBookmarkUrl() {
+      saveSettings();
+      const base = window.location.origin + window.location.pathname;
+      const p = new URLSearchParams();
+      if (SETTINGS.geminiKey) p.set("key", SETTINGS.geminiKey);
+      if (SETTINGS.tgToken) p.set("tg", SETTINGS.tgToken);
+      if (SETTINGS.tgChatId) p.set("chat", SETTINGS.tgChatId);
+      const url = `${base}#${p.toString()}`;
+      navigator.clipboard.writeText(url);
+      toast("🔗 已複製專屬書籤連結（打開後金鑰會自動存入瀏覽器並隱藏）");
+    }
+
+    initSettingsUI();
+  </script>
+</body>
+</html>

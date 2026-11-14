@@ -1,0 +1,31 @@
+# picOrganize 全域設定檔
+trips_dir: "trips"
+thumb_size: 512
+
+dedupe:
+  phash_distance: 6       # pHash 漢明距離門檻（<=6 視為連拍相似）
+  burst_seconds: 10       # 連拍時間窗口（秒）
+  similar_minutes: 10     # 鎖定照片相似提醒的時間範圍（分鐘）
+
+cluster:
+  gap_minutes: 40         # 相鄰照片超過幾分鐘切分為下一個景點群組
+
+blur:
+  drop_ratio: 0.25        # 每個景點群組內淘汰模糊度最差的比例（25%）
+  analyze_size: 1024      # 計算 Laplacian 方差前統一縮放的長邊尺寸
+
+exposure:
+  clip_ratio: 0.35        # 過暗或過曝像素比例上限
+
+select:
+  count: 8                # 預設挑選張數
+  max_count: 20           # IG 輪播上限
+
+export:
+  ig_size: [1080, 1350]   # IG 4:5 縱向比例
+  fb_long_side: 2048      # FB / Threads 長邊尺寸
+  jpeg_quality: 92
+  sequential_time: false  # 是否依輪播順序改寫匯出檔拍攝時間（預設關閉）
+
+telegram:
+  mode: "document"        # document（保留原畫質）或 photo（預覽快但會壓縮）
