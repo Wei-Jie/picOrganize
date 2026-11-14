@@ -314,8 +314,27 @@
 <body>
   <header>
     <div class="app-title">📸 <span id="hdrTrip">picOrganize 手機版</span></div>
-    <span class="stat-pill" id="hdrStat">尚未選取照片</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button id="hdrPinBtn" class="btn sm amber" style="padding:4px 9px;font-size:11px;display:none;" onclick="openPinModal()">🔐 PIN 解鎖</button>
+      <span class="stat-pill" id="hdrStat">尚未選取照片</span>
+    </div>
   </header>
+
+  <!-- PIN 碼解鎖彈出視窗 -->
+  <div id="pinModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(5,8,17,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:18px;">
+    <div class="box" style="width:100%;max-width:380px;margin:0;border:1px solid var(--accent);box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px;">🔐 輸入通行密碼（APP_PIN）</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;">
+        已偵測到你在 GitHub 設定的加密環境變數！請輸入你設定的 <strong>APP_PIN</strong> 通行密碼，即可一鍵解鎖 Gemini 與 Telegram 金鑰：
+      </div>
+      <input id="modalPinIn" type="text" class="text-in" autocomplete="off" data-form-type="other" style="-webkit-text-security:disc;font-size:16px;text-align:center;letter-spacing:3px;" placeholder="請輸入 APP_PIN" onkeydown="if(event.key==='Enter') unlockVaultWithPin('modalPinIn')" />
+      <div id="modalPinErr" style="color:#f87171;font-size:12px;margin-top:6px;display:none;"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn green" style="flex:2;" onclick="unlockVaultWithPin('modalPinIn')">🔓 立即解鎖</button>
+        <button class="btn" style="flex:1;" onclick="closePinModal()">稍後</button>
+      </div>
+    </div>
+  </div>
 
   <main>
     <!-- ==================== 分頁 1：匯入與追加照片 ==================== -->
@@ -1640,11 +1659,58 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
       toast("已清空旅程照片");
     }
 
-    async function unlockVaultWithPin() {
-      const pin = document.getElementById("pinUnlockIn").value.trim();
-      if (!pin) { alert("請輸入 APP_PIN 通行密碼"); return; }
+    function openPinModal() {
+      const m = document.getElementById("pinModal");
+      if (!m) return;
+      m.style.display = "flex";
+      const err = document.getElementById("modalPinErr");
+      if (err) err.style.display = "none";
+      setTimeout(() => {
+        const inp = document.getElementById("modalPinIn");
+        if (inp) inp.focus();
+      }, 60);
+    }
+
+    function closePinModal() {
+      const m = document.getElementById("pinModal");
+      if (m) m.style.display = "none";
+    }
+
+    function updatePinHeaderBadge() {
+      const btn = document.getElementById("hdrPinBtn");
+      if (!btn) return;
       if (!ENCRYPTED_VAULT) {
-        alert("目前網頁尚未包含加密金鑰，請確認已在 GitHub Secrets 設定 APP_PIN 並將 Pages Source 設為 GitHub Actions。");
+        btn.style.display = "none";
+        return;
+      }
+      btn.style.display = "inline-flex";
+      const unlockedSig = localStorage.getItem("picorganize_vault_sig") || "";
+      const curSig = ENCRYPTED_VAULT.slice(0, 16);
+      if (SETTINGS.geminiKey && unlockedSig === curSig) {
+        btn.className = "btn sm green";
+        btn.textContent = "🔓 金鑰已解鎖";
+      } else {
+        btn.className = "btn sm amber";
+        btn.textContent = "🔐 輸入 PIN 解鎖";
+      }
+    }
+
+    async function unlockVaultWithPin(inputId) {
+      const srcId = inputId || "pinUnlockIn";
+      const pinEl = document.getElementById(srcId);
+      const pin = (pinEl ? pinEl.value : "").trim();
+      const errEl = document.getElementById("modalPinErr");
+      if (!pin) {
+        if (srcId === "modalPinIn" && errEl) {
+          errEl.textContent = "⚠️ 請輸入你在 GitHub Secrets 設定的 APP_PIN";
+          errEl.style.display = "block";
+        } else {
+          alert("請輸入 APP_PIN 通行密碼");
+        }
+        return;
+      }
+      if (!ENCRYPTED_VAULT) {
+        alert("目前網頁尚未包含加密金鑰，請確認已在 GitHub Secrets 設定 APP_PIN 並執行 GitHub Actions。");
         return;
       }
       try {
@@ -1654,14 +1720,25 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
         const dec = new Uint8Array(enc.length);
         for (let i = 0; i < enc.length; i++) dec[i] = enc[i] ^ key[i % key.length];
         const obj = JSON.parse(new TextDecoder("utf-8").decode(dec));
+        if (!obj || typeof obj !== "object" || (!obj.geminiKey && !obj.tgToken)) {
+          throw new Error("解密內容不符");
+        }
         if (obj.geminiKey) SETTINGS.geminiKey = obj.geminiKey;
         if (obj.tgToken) SETTINGS.tgToken = obj.tgToken;
         if (obj.tgChatId) SETTINGS.tgChatId = obj.tgChatId;
+        localStorage.setItem("picorganize_vault_sig", ENCRYPTED_VAULT.slice(0, 16));
         initSettingsUI();
         saveSettings();
-        toast("🎉 解鎖成功！已自動帶入所有金鑰！");
+        closePinModal();
+        updatePinHeaderBadge();
+        toast("🎉 解鎖成功！已自動載入 Gemini 與 Telegram 金鑰！");
       } catch (e) {
-        alert("通行密碼不正確，解鎖失敗！");
+        if (srcId === "modalPinIn" && errEl) {
+          errEl.textContent = "❌ 通行密碼（APP_PIN）不正確，請重新輸入！";
+          errEl.style.display = "block";
+        } else {
+          alert("通行密碼不正確，解鎖失敗！");
+        }
       }
     }
 
@@ -1678,6 +1755,11 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
     }
 
     initSettingsUI();
+    updatePinHeaderBadge();
+    // 若網頁內含 GitHub Actions 加密金鑰，且此瀏覽器尚未解鎖最新金鑰庫，一打開網頁就自動彈出 PIN 碼解鎖視窗！
+    if (ENCRYPTED_VAULT && (!SETTINGS.geminiKey || localStorage.getItem("picorganize_vault_sig") !== ENCRYPTED_VAULT.slice(0, 16))) {
+      openPinModal();
+    }
   </script>
 </body>
 </html>

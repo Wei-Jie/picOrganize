@@ -1,5 +1,5 @@
-// picOrganize Service Worker：採用 Network-First（優先讀取最新網頁，離線時才用快取）
-const CACHE_NAME = "picorganize-pwa-v10";
+// picOrganize Service Worker：採用 Network-First（優先強制讀取最新網頁，離線時才用快取）
+const CACHE_NAME = "picorganize-pwa-v11";
 const ASSETS = [
   "./",
   "./index.html",
@@ -27,7 +27,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: "no-store" })
       .then((resp) => {
         const clone = resp.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
