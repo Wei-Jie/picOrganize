@@ -322,8 +322,8 @@
     <section id="tab_import">
       <div class="box">
         <div style="font-weight:800;margin-bottom:8px;">📍 步驟 1：設定旅程名稱</div>
-        <input id="tripNameIn" class="text-in" placeholder="例如：115-11-06_爬爬硬漢嶺" value="週末小旅行" oninput="APP.trip = this.value || '週末小旅行'; updateHeader();" />
-        <input id="tripNoteIn" class="text-in" style="margin-top:8px;" placeholder="選填：走訪景點、吃到的美食或心情備註（供文案使用）" oninput="APP.tripNote = this.value;" />
+        <input id="tripNameIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="例如：115-11-06_爬爬硬漢嶺" value="週末小旅行" oninput="APP.trip = this.value || '週末小旅行'; updateHeader();" />
+        <input id="tripNoteIn" class="text-in" autocomplete="off" data-form-type="other" style="margin-top:8px;" placeholder="選填：走訪景點、吃到的美食或心情備註（供文案使用）" oninput="APP.tripNote = this.value;" />
       </div>
 
       <div class="box">
@@ -454,7 +454,7 @@
           1. 點開 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a> 登入 Google 帳號<br />
           2. 點「<strong>Create API key</strong>」→ 複製 `AQ.` 或 `AIza...` 開頭的金鑰貼在下方：
         </div>
-        <input type="password" id="geminiKeyIn" class="text-in" placeholder="貼上 AQ.Ab8RN6... 或 AIzaSy... 金鑰" onchange="saveSettings()" />
+        <input type="text" id="geminiKeyIn" class="text-in" autocomplete="off" spellcheck="false" style="-webkit-text-security:disc;" placeholder="貼上 AQ.Ab8RN6... 或 AIzaSy... 金鑰" onchange="saveSettings()" />
       </div>
 
       <div class="box">
