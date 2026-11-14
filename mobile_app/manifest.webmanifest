@@ -1,13 +1,12 @@
 {
-  "name": "picOrganize 旅遊照片智慧挑選",
+  "name": "picOrganize 旅行底片整理與隨筆手札",
   "short_name": "picOrganize",
-  "description": "手機本機高速快篩、鎖定必選、拖曳排序與個人風格社群貼文生成 App",
+  "description": "本機暗房高速快篩、和紙膠帶私藏必留、35mm 底片排序與個人風格隨筆手札",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#F4F1EA",
+  "theme_color": "#F4F1EA",
   "lang": "zh-TW",
   "icons": [
     {
