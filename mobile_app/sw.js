@@ -1,5 +1,5 @@
 // picOrganize Service Worker：採用 Network-First（優先強制讀取最新網頁，離線時才用快取）
-const CACHE_NAME = "picorganize-pwa-v12";
+const CACHE_NAME = "picorganize-pwa-v13";
 const ASSETS = [
   "./",
   "./index.html",

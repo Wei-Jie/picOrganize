@@ -55,10 +55,6 @@ jobs:
               print("No APP_PIN or secrets configured; skipping vault injection.")
           EOF
 
-      - name: 同步已加密注入的網頁至 gh-pages 分支（相容分支部署與 Actions 部署）
-        run: |
-          npx --yes gh-pages -d mobile_app -u "github-actions-bot <support+actions@github.com>" -m "自動部署加密金鑰版網頁" || true
-
       - name: 設定 GitHub Pages
         uses: actions/configure-pages@v5
 
