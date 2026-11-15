@@ -26,7 +26,7 @@
       --text: #2C2A26;
       --muted: #78736A;
 
-      /* 低彩度文青重點色（Desaturated Earth & Film Tones） */
+      /* 低彩度文青重點色 */
       --accent: #5A6B5C;          /* 鼠尾草綠 Sage Green */
       --accent-dark: #465448;     /* 森林深鼠尾草 */
       --accent-soft: #E5EBE6;
@@ -46,7 +46,7 @@
 
       /* 溫潤紙張陰影 */
       --shadow-paper: 0 2px 10px rgba(44, 42, 38, 0.05), 0 1px 2px rgba(44, 42, 38, 0.04);
-      --shadow-float: 0 12px 28px rgba(44, 42, 38, 0.11);
+      --shadow-float: 0 12px 28px rgba(44, 42, 38, 0.12);
       --line-rule: rgba(184, 176, 162, 0.34);
     }
 
@@ -78,10 +78,9 @@
       font-family: var(--font-sans);
       background: var(--bg);
       color: var(--text);
-      padding-bottom: calc(88px + env(safe-area-inset-bottom));
+      padding-bottom: calc(84px + env(safe-area-inset-bottom));
       overscroll-behavior-y: contain;
       transition: background-color 0.25s ease, color 0.25s ease;
-      position: relative;
     }
     /* 細緻紙張纖維微肌理 */
     body::before {
@@ -90,86 +89,45 @@
       inset: 0;
       pointer-events: none;
       z-index: 90;
-      opacity: 0.032;
+      opacity: 0.03;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* 頂部雜誌感刊頭與導覽列 */
+    /* ==================== 頂部常駐工具列 ==================== */
     header {
       position: sticky;
       top: 0;
       z-index: 45;
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      background: color-mix(in srgb, var(--bg) 93%, transparent);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 16px;
+      padding: 9px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
     .brand-wrap {
       display: flex;
-      flex-direction: column;
-      gap: 1px;
+      align-items: center;
+      gap: 12px;
     }
     .brand-kicker {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       letter-spacing: 0.14em;
       color: var(--muted);
       text-transform: uppercase;
+      display: block;
     }
     .app-title {
       font-family: var(--font-serif);
-      font-size: 17px;
+      font-size: 16.5px;
       font-weight: 700;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
       color: var(--text);
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
     }
-    /* 電腦版頂部章節導覽列（手機隱藏，電腦 ≥920px 顯示） */
-    .top-chapter-nav {
-      display: none;
-      align-items: center;
-      gap: 4px;
-      background: var(--card);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-    }
-    .top-tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-family: var(--font-serif);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .top-tab-btn .roman {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      opacity: 0.75;
-    }
-    .top-tab-btn:hover { color: var(--text); }
-    .top-tab-btn.active {
-      background: var(--panel);
-      color: var(--accent-dark);
-      box-shadow: var(--shadow-paper);
-    }
-    [data-theme="darkroom"] .top-tab-btn.active {
-      color: var(--accent);
-    }
-
     .stat-pill {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -182,16 +140,16 @@
     }
 
     main {
-      padding: 16px 14px 28px;
-      max-width: 1180px;
+      padding: 14px 14px 28px;
+      max-width: 1380px;
       margin: 0 auto;
     }
     .box {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
       box-shadow: var(--shadow-paper);
       position: relative;
     }
@@ -203,14 +161,14 @@
       letter-spacing: 0.14em;
       color: var(--amber);
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .sec-title {
       font-family: var(--font-serif);
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 700;
       letter-spacing: 0.02em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: var(--text);
     }
 
@@ -223,13 +181,13 @@
       border: 1px solid var(--border-strong);
       background: var(--panel);
       color: var(--text);
-      padding: 9px 14px;
+      padding: 8px 13px;
       border-radius: 7px;
       font-size: 13px;
       font-weight: 600;
       font-family: var(--font-sans);
       cursor: pointer;
-      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.14s ease, background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
     .btn:hover {
       background: var(--card);
@@ -257,7 +215,7 @@
       color: var(--panel);
       border-color: var(--text);
     }
-    .btn.block { width: 100%; padding: 12px 16px; font-size: 14px; }
+    .btn.block { width: 100%; padding: 11px 16px; font-size: 14px; }
     .btn.sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
@@ -267,8 +225,8 @@
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 7px;
-      padding: 10px 12px;
-      font-size: 14px;
+      padding: 9px 11px;
+      font-size: 13.5px;
       font-family: inherit;
       transition: border-color 0.2s ease;
     }
@@ -277,7 +235,7 @@
       border-color: var(--accent);
     }
 
-    /* 特效 5：原稿橫線手札筆記紙（Manuscript Lined Paper） */
+    /* 原稿橫線手札筆記紙（Manuscript Lined Paper） */
     textarea.lined-paper {
       background-color: var(--panel);
       background-image:
@@ -286,46 +244,70 @@
       line-height: 28px !important;
       padding: 6px 14px 10px 32px !important;
       font-family: var(--font-serif);
-      font-size: 14.5px;
+      font-size: 14px;
       letter-spacing: 0.02em;
     }
 
-    /* 電腦版拖放相紙盒（Dropzone Lightbox） */
+    /* ==================== 首屏空狀態：大型相紙拖放工作桌 ==================== */
+    .welcome-hero {
+      max-width: 720px;
+      margin: 18px auto;
+      padding: 28px 24px;
+      text-align: center;
+    }
     .dropzone-desk {
       border: 1.5px dashed var(--border-strong);
-      border-radius: 9px;
+      border-radius: 10px;
       background: color-mix(in srgb, var(--card) 55%, var(--panel));
-      padding: 20px 16px;
+      padding: 32px 20px;
       text-align: center;
       transition: all 0.22s ease;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin: 14px 0;
     }
     .dropzone-desk:hover, .dropzone-desk.dragover {
       border-color: var(--accent);
       background: var(--accent-soft);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
     .dropzone-icon {
       font-family: var(--font-mono);
       font-size: 11px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       color: var(--accent);
       border: 1px solid var(--accent);
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 999px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    /* 特效 4：暗房顯影液流動進度盤（Darkroom Developing Tray） */
+    /* 全視窗拖放覆蓋層 */
+    #globalDropOverlay {
+      display: none;
+      position: fixed;
+      inset: 12px;
+      z-index: 150;
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      backdrop-filter: blur(6px);
+      border: 2.5px dashed var(--accent);
+      border-radius: 14px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      pointer-events: none;
+      box-shadow: var(--shadow-float);
+    }
+
+    /* 暗房顯影液流動進度盤（Darkroom Developing Tray） */
     .progress-wrap {
       display: none;
-      margin-top: 14px;
-      background: var(--card);
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      padding: 12px 14px;
+      margin-bottom: 14px;
+      background: var(--panel);
+      border: 1px solid var(--amber);
+      border-radius: 9px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-paper);
     }
     .progress-bar {
       height: 7px;
@@ -347,11 +329,23 @@
       transition: width 0.15s ease;
     }
 
-    /* 特效 1：35mm 底片膠卷齒孔排序軌道（Analog Film Sprocket Strip） */
+    /* ==================== 頂部常駐：唯一一條 35mm 底片排序軌 ==================== */
+    .sticky-film-tray {
+      position: sticky;
+      top: 53px;
+      z-index: 35;
+      background: color-mix(in srgb, var(--panel) 95%, transparent);
+      backdrop-filter: blur(10px);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      box-shadow: var(--shadow-paper);
+    }
     .film-strip-wrap {
       background: var(--film-bg);
-      padding: 22px 12px 18px;
-      border-radius: 9px;
+      padding: 20px 12px 16px;
+      border-radius: 8px;
       position: relative;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.55);
       overflow: hidden;
@@ -362,25 +356,25 @@
       position: absolute;
       left: 10px;
       right: 10px;
-      height: 7px;
+      height: 6px;
       background-image: repeating-linear-gradient(
         to right,
         rgba(244, 241, 234, 0.72) 0px,
-        rgba(244, 241, 234, 0.72) 9px,
-        transparent 9px,
-        transparent 20px
+        rgba(244, 241, 234, 0.72) 8px,
+        transparent 8px,
+        transparent 18px
       );
       border-radius: 1px;
       pointer-events: none;
     }
-    .film-strip-wrap::before { top: 6px; }
+    .film-strip-wrap::before { top: 5px; }
     .film-strip-wrap::after { bottom: 5px; }
     .film-edge-code {
       position: absolute;
-      top: 14px;
+      top: 12px;
       right: 14px;
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: 8.5px;
       letter-spacing: 0.16em;
       color: var(--film-edge);
       opacity: 0.75;
@@ -389,55 +383,58 @@
 
     .strip {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       overflow-x: auto;
-      padding: 6px 4px 6px;
-      min-height: 116px;
+      padding: 4px 2px;
+      min-height: 98px;
       -webkit-overflow-scrolling: touch;
     }
     .strip-item {
       position: relative;
-      width: 98px;
-      height: 106px;
+      width: 90px;
+      height: 96px;
       flex: 0 0 auto;
       border-radius: 4px;
       overflow: hidden;
-      border: 1.5px solid rgba(212, 154, 69, 0.55);
+      border: 1.5px solid rgba(212, 154, 69, 0.45);
       background: #0d0c0b;
       user-select: none;
       cursor: grab;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+    .strip-item.active-frame {
+      border: 2px solid #FAF8F5;
+      box-shadow: 0 0 0 2px var(--film-edge);
     }
     .strip-item:hover {
       transform: translateY(-2px);
       border-color: var(--film-edge);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
     }
-    .strip-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; filter: contrast(1.02); }
+    .strip-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
     .num-badge {
       position: absolute;
-      top: 4px;
-      left: 4px;
+      top: 3px;
+      left: 3px;
       background: rgba(20, 19, 17, 0.88);
       color: var(--film-edge);
       border: 1px solid rgba(212, 154, 69, 0.5);
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 600;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 3px;
     }
     .rm-btn {
       position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 20px;
-      height: 20px;
+      top: 3px;
+      right: 3px;
+      width: 19px;
+      height: 19px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.25);
       background: rgba(30, 29, 27, 0.85);
       color: #E6E1D8;
-      font-size: 11px;
+      font-size: 10px;
       padding: 0;
       cursor: pointer;
     }
@@ -452,27 +449,27 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 2px 4px;
+      padding: 1px 3px;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
     }
     .move-bar button {
       background: none;
       border: none;
       color: var(--film-edge);
-      font-size: 12px;
-      padding: 1px 5px;
+      font-size: 11px;
+      padding: 1px 4px;
       cursor: pointer;
     }
 
-    /* 特效 2 & 3：拍立得相紙牆（Polaroid Contact Sheet）＋ 和紙膠帶 ＋ 復古橡皮郵戳 */
+    /* ==================== 拍立得相紙牆（點擊看大圖 vs 點擊右上角勾選分離） ==================== */
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 14px;
     }
     @media (min-width: 560px) { .photo-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 920px) { .photo-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
+    @media (min-width: 1200px) { .photo-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
 
     .p-card {
       position: relative;
@@ -481,13 +478,12 @@
       border-radius: 6px;
       padding: 8px 8px 10px;
       box-shadow: var(--shadow-paper);
-      cursor: pointer;
-      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.2s ease;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease;
     }
-    .p-card:nth-child(odd) { transform: rotate(-0.45deg); }
-    .p-card:nth-child(even) { transform: rotate(0.45deg); }
+    .p-card:nth-child(odd) { transform: rotate(-0.35deg); }
+    .p-card:nth-child(even) { transform: rotate(0.35deg); }
     .p-card:hover {
-      transform: rotate(0deg) translateY(-4px);
+      transform: rotate(0deg) translateY(-3px);
       box-shadow: var(--shadow-float);
       z-index: 3;
     }
@@ -495,26 +491,85 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 1.5px var(--accent), var(--shadow-float);
     }
+    .p-thumb-wrap {
+      position: relative;
+      cursor: zoom-in;
+      border-radius: 3px;
+      overflow: hidden;
+      background: #1E1D1B;
+    }
     .p-card img {
       width: 100%;
-      height: 156px;
+      height: 162px;
       object-fit: cover;
       display: block;
-      background: #1E1D1B;
-      border-radius: 3px;
+      transition: transform 0.25s ease;
     }
-    .p-info {
-      padding: 8px 4px 2px;
+    .p-thumb-wrap:hover img {
+      transform: scale(1.03);
+    }
+    .zoom-hint {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(26, 25, 23, 0.72);
+      color: #FAF8F5;
       font-family: var(--font-mono);
+      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      pointer-events: none;
+    }
+    .p-thumb-wrap:hover .zoom-hint { opacity: 1; }
+
+    /* 卡片操作列：明確分離「選入／移出」與「貼上必留膠帶」 */
+    .p-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-top: 7px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border);
+    }
+    .act-pill {
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
       font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .act-pill:hover { border-color: var(--accent); }
+    .act-pill.is-sel {
+      background: var(--accent);
+      border-color: var(--accent-dark);
+      color: #FAF8F5;
+    }
+    .act-pill.is-lock {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .p-info {
+      padding: 6px 2px 0;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
       color: var(--muted);
     }
     .p-reason {
       font-family: var(--font-serif);
       color: var(--accent-dark);
-      margin-top: 4px;
+      margin-top: 3px;
       font-size: 11.5px;
-      line-height: 1.4;
+      line-height: 1.35;
     }
     [data-theme="darkroom"] .p-reason { color: var(--accent); }
 
@@ -524,13 +579,13 @@
       top: -6px;
       left: 50%;
       transform: translateX(-50%) rotate(-1.8deg);
-      background: linear-gradient(135deg, rgba(226, 200, 148, 0.92), rgba(212, 182, 125, 0.92));
+      background: linear-gradient(135deg, rgba(226, 200, 148, 0.94), rgba(212, 182, 125, 0.94));
       color: #3A3022;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 0.06em;
-      padding: 3px 12px;
+      padding: 2px 11px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
       clip-path: polygon(4% 0%, 96% 3%, 100% 50%, 95% 97%, 3% 100%, 0% 48%);
       z-index: 5;
@@ -546,19 +601,19 @@
     }
     .stamp-badge {
       position: absolute;
-      right: 12px;
-      bottom: 52px;
-      border: 1.8px solid var(--red);
+      right: 6px;
+      bottom: 6px;
+      border: 1.6px solid var(--red);
       outline: 1px solid var(--red);
-      outline-offset: 2px;
+      outline-offset: 1.5px;
       color: var(--red);
       font-family: var(--font-mono);
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      padding: 2px 6px;
+      letter-spacing: 0.06em;
+      padding: 1px 5px;
       border-radius: 2px;
-      background: rgba(250, 248, 245, 0.88);
+      background: rgba(250, 248, 245, 0.9);
       transform: rotate(-9deg);
       animation: stampBounce 0.28s cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
       pointer-events: none;
@@ -567,8 +622,9 @@
 
     .chip-warn {
       display: inline-block;
-      margin-top: 4px;
-      padding: 1px 6px;
+      margin-top: 3px;
+      margin-right: 3px;
+      padding: 1px 5px;
       border-radius: 4px;
       font-family: var(--font-sans);
       font-size: 10px;
@@ -576,58 +632,82 @@
       color: var(--amber);
       border: 1px solid rgba(176, 125, 79, 0.35);
     }
-    .chip-new {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: var(--red);
-      color: #FAF8F5;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
 
-    /* 暗房燈箱舞台 */
+    /* ==================== 右欄：暗房預覽舞台与隨筆手札 ==================== */
     .stage {
       position: relative;
       background: #161514;
       border: 1px solid var(--border-strong);
       border-radius: 8px;
-      height: 360px;
+      height: 280px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.5);
+      cursor: zoom-in;
     }
-    .stage img { max-width: 96%; max-height: 94%; object-fit: contain; border-radius: 2px; box-shadow: 0 8px 24px rgba(0,0,0,0.45); }
+    .stage img { max-width: 96%; max-height: 94%; object-fit: contain; border-radius: 2px; }
     .stage-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.24);
       background: rgba(26, 25, 23, 0.78);
       color: #FAF8F5;
-      font-size: 18px;
+      font-size: 17px;
       cursor: pointer;
     }
     .stage-nav:hover { background: var(--accent); }
-    .stage-nav.prev { left: 10px; }
-    .stage-nav.next { right: 10px; }
+    .stage-nav.prev { left: 8px; }
+    .stage-nav.next { right: 8px; }
 
-    /* 手機版懸浮膠囊導覽列（電腦 ≥920px 自動隱藏） */
+    /* 照片或備註變更後的溫潤提示條（Dirty Banner） */
+    .dirty-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--amber-soft);
+      border: 1px solid var(--amber);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* ==================== 電腦版雙欄一氣呵成工作台 vs 手機版切換 ==================== */
+    @media (min-width: 980px) {
+      body { padding-bottom: 32px; }
+      nav.bottom-nav { display: none !important; }
+      .workspace-split {
+        display: grid;
+        grid-template-columns: 1.32fr 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      /* 電腦版左右兩欄永遠同時顯示，完全不用跳頁！ */
+      #pane_cull, #pane_story {
+        display: block !important;
+      }
+      .story-sticky-col {
+        position: sticky;
+        top: 215px;
+      }
+    }
+
+    /* 手機版懸浮膠囊導覽列（<980px 顯示） */
     nav.bottom-nav {
       position: fixed;
       bottom: calc(10px + env(safe-area-inset-bottom));
       left: 14px;
       right: 14px;
-      max-width: 480px;
+      max-width: 440px;
       margin: 0 auto;
       z-index: 50;
       background: color-mix(in srgb, var(--panel) 94%, transparent);
@@ -636,7 +716,7 @@
       border-radius: 999px;
       box-shadow: var(--shadow-float);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       padding: 5px 6px;
     }
     .nav-btn {
@@ -644,59 +724,89 @@
       border: none;
       color: var(--muted);
       font-family: var(--font-serif);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 6px 2px;
+      padding: 7px 4px;
       border-radius: 999px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 2px;
+      justify-content: center;
+      gap: 5px;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
-    .nav-btn .ico {
+    .nav-btn .ico { font-family: var(--font-mono); font-size: 11px; }
+    .nav-btn.active { color: #FAF8F5; background: var(--accent); }
+
+    /* ==================== 原圖高清放大檢視燈箱（High-Res Lightbox Modal） ==================== */
+    #lightboxModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 140;
+      background: rgba(16, 15, 14, 0.92);
+      backdrop-filter: blur(8px);
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .lb-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #E6E1D8;
       font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.05em;
+      font-size: 12px;
+      gap: 10px;
     }
-    .nav-btn.active {
-      color: #FAF8F5;
-      background: var(--accent);
+    .lb-Body {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .lb-Body img {
+      max-width: 96%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.65);
+    }
+    .lb-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    /* 電腦版（≥920px）專屬雙欄雜誌工作桌佈局 */
-    #desktopTipsBox { display: none; }
-    @media (min-width: 920px) {
-      body { padding-bottom: 36px; }
-      nav.bottom-nav { display: none !important; }
-      .top-chapter-nav { display: inline-flex; }
-      #installGuideBox { display: none !important; }
-      #desktopTipsBox { display: block; }
-
-      .import-desk-grid {
-        display: grid;
-        grid-template-columns: 1fr 1.25fr;
-        gap: 20px;
-        align-items: start;
-      }
-      .publish-desk-grid {
-        display: grid;
-        grid-template-columns: 1.15fr 1fr;
-        gap: 20px;
-        align-items: start;
-      }
-      .sticky-film-box {
-        position: sticky;
-        top: 66px;
-        z-index: 30;
-      }
-      .stage { height: 420px; }
+    /* 設定與個人文風抽屜 Modal */
+    #settingsModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 130;
+      background: rgba(26, 25, 23, 0.65);
+      backdrop-filter: blur(5px);
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .settings-drawer {
+      width: 100%;
+      max-width: 540px;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--bg);
+      border-left: 1px solid var(--border-strong);
+      padding: 20px 18px 60px;
+      box-shadow: var(--shadow-float);
     }
 
     .toast {
       position: fixed;
-      bottom: calc(78px + env(safe-area-inset-bottom));
+      bottom: calc(76px + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
       background: var(--text);
@@ -707,41 +817,47 @@
       font-family: var(--font-serif);
       font-size: 13px;
       font-weight: 600;
-      letter-spacing: 0.03em;
       box-shadow: var(--shadow-float);
       display: none;
-      z-index: 110;
+      z-index: 160;
       white-space: nowrap;
     }
-    @media (min-width: 920px) {
-      .toast { bottom: 28px; }
-    }
+    @media (min-width: 980px) { .toast { bottom: 26px; } }
   </style>
 </head>
 <body>
+  <!-- 全視窗拖放提示層（在任何畫面直接把電腦照片或 .zip 拖進視窗即可追加） -->
+  <div id="globalDropOverlay">
+    <div class="dropzone-icon">DROP TO DARKROOM</div>
+    <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;margin-bottom:6px;">放開滑鼠，將相片或 Google 相簿 .zip 攤開至工作桌</div>
+    <div style="font-size:13px;color:var(--muted);">原圖於本機瀏覽器內直接解壓與快篩，絕不上傳雲端</div>
+  </div>
+
+  <!-- 頂部常駐列：左側品牌與快速追加照片、右側狀態與設定抽屜 -->
   <header>
     <div class="brand-wrap">
-      <span class="brand-kicker">FIELD NOTES &amp; ANALOG ARCHIVE</span>
-      <div class="app-title"><span id="hdrTrip">picOrganize 旅行手札</span></div>
-    </div>
-
-    <!-- 電腦版橫向雜誌章節導覽列 -->
-    <div class="top-chapter-nav" role="tablist">
-      <button class="top-tab-btn active" id="dnav_import" onclick="goTab('import')"><span class="roman">Ⅰ.</span><span>扉頁與選片</span></button>
-      <button class="top-tab-btn" id="dnav_review" onclick="goTab('review')"><span class="roman">Ⅱ.</span><span>接觸印相挑圖</span></button>
-      <button class="top-tab-btn" id="dnav_publish" onclick="goTab('publish')"><span class="roman">Ⅲ.</span><span>敘事排版與隨筆</span></button>
-      <button class="top-tab-btn" id="dnav_settings" onclick="goTab('settings')"><span class="roman">Ⅳ.</span><span>暗房設定與文風</span></button>
-    </div>
-
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button id="themeToggleBtn" class="btn sm" style="padding:4px 10px;font-size:11px;" onclick="toggleTheme()" title="切換紙感手札／暗房微光模式">🌙 暗房微光</button>
-      <button id="hdrPinBtn" class="btn sm amber" style="padding:4px 10px;font-size:11px;display:none;" onclick="openPinModal()">🔐 PIN 解鎖</button>
+      <div>
+        <span class="brand-kicker">FIELD NOTES &amp; ANALOG ARCHIVE</span>
+        <div class="app-title"><span id="hdrTrip">picOrganize 旅行手札</span></div>
+      </div>
       <span class="stat-pill" id="hdrStat">尚未攤開相片</span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+      <input type="file" id="fileAutoIn" multiple accept="image/*,.zip,application/zip" style="display:none;" onchange="handleIncomingFiles(this.files, false); this.value='';" />
+      <input type="file" id="fileManualIn" multiple accept="image/*" style="display:none;" onchange="handleIncomingFiles(this.files, true); this.value='';" />
+      <button class="btn sm primary" onclick="document.getElementById('fileAutoIn').click()" title="可選取多張照片或直接選取 Google 相簿下載的 .zip 壓縮包">
+        ＋ 攤開新相片 / .zip
+      </button>
+      <button class="btn sm" id="btnResetTop" style="display:none;" onclick="resetTrip()">清空重來</button>
+      <button id="themeToggleBtn" class="btn sm" onclick="toggleTheme()" title="切換紙感手札／暗房微光模式">🌙 暗房</button>
+      <button id="hdrPinBtn" class="btn sm amber" style="display:none;" onclick="openPinModal()">🔐 PIN 解鎖</button>
+      <button class="btn sm" onclick="openSettingsDrawer()">⚙️ 文風與設定</button>
     </div>
   </header>
 
   <!-- PIN 碼解鎖彈出視窗 -->
-  <div id="pinModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(26,25,23,0.72);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:18px;">
+  <div id="pinModal" style="display:none;position:fixed;inset:0;z-index:145;background:rgba(26,25,23,0.72);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:18px;">
     <div class="box" style="width:100%;max-width:390px;margin:0;border:1px solid var(--border-strong);box-shadow:var(--shadow-float);">
       <div class="step-tag">PRIVATE VAULT // 雲端加密金鑰匣</div>
       <div class="sec-title">輸入通行密碼（APP_PIN）</div>
@@ -757,188 +873,38 @@
     </div>
   </div>
 
-  <main>
-    <!-- ==================== 分頁 1：旅程扉頁與攤開相片 ==================== -->
-    <section id="tab_import">
-      <div class="import-desk-grid">
+  <!-- 原圖高清放大檢視燈箱（點擊任一照片放大確認對焦與表情） -->
+  <div id="lightboxModal" onclick="if(event.target===this) closeLightbox()">
+    <div class="lb-top">
+      <span id="lbTitle">FRAME 01</span>
+      <span id="lbMeta" style="color:#9A948A;"></span>
+      <button class="btn sm" onclick="closeLightbox()">✕ 關閉燈箱 (Esc)</button>
+    </div>
+    <div class="lb-Body" onclick="if(event.target===this) closeLightbox()">
+      <button class="stage-nav prev" onclick="stepLightbox(-1)" title="上一張 (←)">‹</button>
+      <img id="lbImg" src="" alt="原圖放大檢視" />
+      <button class="stage-nav next" onclick="stepLightbox(1)" title="下一張 (→)">›</button>
+    </div>
+    <div class="lb-bottom">
+      <button class="btn sm" id="lbBtnSelect" onclick="toggleLightboxSelect()">✓ 選入底片軌 (Space)</button>
+      <button class="btn sm" id="lbBtnLock" onclick="toggleLightboxLock()">📌 貼上必留膠帶 (KEEP)</button>
+    </div>
+  </div>
+
+  <!-- 設定與文風側邊抽屜（不打斷挑圖與寫作心流） -->
+  <div id="settingsModal" onclick="if(event.target===this) closeSettingsDrawer()">
+    <div class="settings-drawer">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
         <div>
-          <div class="box">
-            <div class="step-tag">01 / JOURNAL TITLE</div>
-            <div class="sec-title">寫下這趟旅程的扉頁標題</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">給這次整理的照片一個題目，並隨手記下途中難忘的風景、小店或心情片段：</div>
-            <input id="tripNameIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="例如：115-11-06_爬爬硬漢嶺" value="週末小旅行" oninput="APP.trip = this.value || '週末小旅行'; updateHeader();" />
-            <textarea id="tripNoteIn" class="text-in lined-paper" autocomplete="off" data-form-type="other" style="margin-top:10px;min-height:112px;" placeholder="隨筆速記：走訪的步道、街角偶遇的美食、朋友好笑的對話（AI 撰寫隨筆時將融入其中）..." oninput="APP.tripNote = this.value;"></textarea>
-          </div>
-
-          <!-- 電腦版專屬：工作桌操作提示 -->
-          <div class="box" id="desktopTipsBox">
-            <div class="step-tag">LIGHTBOX DESK // 電腦工作桌模式</div>
-            <div class="sec-title">暗房相紙工作桌小撇步</div>
-            <div style="font-size:12.5px;color:var(--muted);line-height:1.7;">
-              • <strong>滑鼠拖放相片</strong>：可直接從電腦資料夾框選多張照片，拖進右側相紙框內攤開。<br />
-              • <strong>鍵盤翻閱燈箱</strong>：在「Ⅲ. 敘事排版與隨筆」分頁可按鍵盤 <code>←</code> <code>→</code> 方向鍵翻看相片。<br />
-              • <strong>整理新旅程</strong>：<button class="btn sm" style="margin-left:4px;" onclick="resetTrip()">收起目前相片重來</button>
-            </div>
-          </div>
-
-          <!-- 手機版專屬：收入主畫面提示 -->
-          <div class="box" id="installGuideBox">
-            <div class="step-tag">POCKET EDITION // 隨身手札</div>
-            <div class="sec-title">將手札收入主畫面</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.6;">
-              • 點瀏覽器選單「<strong>加到主畫面 / 安裝應用程式</strong>」，即可像翻閱實體筆記本一樣隨時開啟。<br />
-              • 整理新旅程：<button class="btn sm" style="margin-left:4px;margin-top:4px;" onclick="resetTrip()">收起目前相片重來</button>
-            </div>
-          </div>
+          <span class="step-tag">DARKROOM PREFERENCES</span>
+          <div class="sec-title" style="margin:0;">暗房金鑰與個人文風設定</div>
         </div>
-
-        <div class="box">
-          <div class="step-tag">02 / DARKROOM CULLING</div>
-          <div class="sec-title" id="importStep2Title">攤開旅行相片（本機暗房高速顯影與快篩）</div>
-          <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6;" id="importStep2Desc">
-            所有相片皆<strong>直接在你的瀏覽器本機端完成顯影分析</strong>（對焦清晰度、連拍去重與時段分群），<strong>不會將數百張原圖上傳至雲端</strong>，保有私密與流暢。
-          </div>
-
-          <input type="file" id="fileAutoIn" multiple accept="image/*" style="display:none;" onchange="handleFiles(this.files, 'auto'); this.value='';" />
-          <div class="dropzone-desk" id="photoDropzone" onclick="document.getElementById('fileAutoIn').click()">
-            <div class="dropzone-icon">35MM CONTACT SHEET</div>
-            <div style="font-family:var(--font-serif);font-size:15px;font-weight:700;margin-bottom:4px;" id="dropzoneMainText">
-              點此攤開相片夾，或直接將照片拖放至此處
-            </div>
-            <div style="font-size:12px;color:var(--muted);" id="dropzoneSubText">
-              自動過濾模糊與連拍重複，依時段初選 8 幀代表作
-            </div>
-          </div>
-
-          <button class="btn primary block" id="btnPickAuto" onclick="document.getElementById('fileAutoIn').click()">
-            選擇旅行照片（本機暗房快篩＆初選 8 幀）
-          </button>
-
-          <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--border-strong);">
-            <div class="step-tag" style="color:var(--accent);">WASHI TAPE KEEP // 私藏必留</div>
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:14.5px;margin-bottom:4px;">貼上和紙膠帶：指定必留的紀念畫面（絕不淘汰）</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">
-              有故事或紀念意義但略為失焦、或與其他張構圖相似的照片請從這裡加入：系統會自動為它貼上 <strong>「KEEP · 必留」和紙膠帶</strong>，快篩與 AI 換批時皆完整保留。
-            </div>
-            <input type="file" id="fileManualIn" multiple accept="image/*" style="display:none;" onchange="handleFiles(this.files, 'manual'); this.value='';" />
-            <button class="btn amber block" onclick="document.getElementById('fileManualIn').click()">
-              ＋ 追加私藏必留照片（自動貼上和紙膠帶保留）
-            </button>
-          </div>
-
-          <div class="progress-wrap" id="progWrap">
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-              <span id="progText" style="font-family:var(--font-serif);font-weight:600;">正在本機暗房檢視對焦與光影層次...</span>
-              <span id="progNum" style="font-family:var(--font-mono);color:var(--amber);">FRAME 0 / 0</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 分頁 2：接觸印相挑圖 ==================== -->
-    <section id="tab_review" style="display:none;">
-      <div class="box sticky-film-box">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
-          <div>
-            <span class="step-tag" style="margin-right:6px;">SELECTED ROLL</span>
-            <strong style="font-family:var(--font-serif);font-size:14.5px;" id="reviewStripHint">35mm 已選底片軌（拖曳底片格或點 ◀ ▶ 調整敘事順序）</strong>
-          </div>
-          <label style="font-size:12px;color:var(--muted);cursor:pointer;">
-            <input type="checkbox" id="onlyNewChk" onchange="renderReview()" /> 僅顯示最新追加批次
-          </label>
-        </div>
-
-        <div class="film-strip-wrap">
-          <span class="film-edge-code">KODAK PORTRA 400 · ANALOG ARCHIVE</span>
-          <div class="strip" id="reviewStrip"></div>
-        </div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-          <button class="btn sm primary" onclick="runGeminiCurate()">AI 視覺策展（看圖挑 8 幀＋撰寫隨筆）</button>
-          <button class="btn sm" onclick="reselectLocal(true)">換一批候選（保留必留膠帶）</button>
-          <button class="btn sm" onclick="reselectLocal(false)">依時段補滿 8 幀</button>
-          <button class="btn sm green" style="margin-left:auto;" onclick="goTab('publish')">前往敘事排版與隨筆 →</button>
-        </div>
+        <button class="btn sm" onclick="closeSettingsDrawer()">✕ 完成返回</button>
       </div>
 
-      <div id="clustersWrap"></div>
-
-      <details class="box">
-        <summary style="cursor:pointer;font-family:var(--font-serif);font-weight:700;font-size:13.5px;color:var(--muted);" id="rejSummary">
-          展開「暗房淘汰底片夾」（點選任一幀即可救回並貼上必留膠帶）
-        </summary>
-        <div class="photo-grid" id="rejGrid" style="margin-top:12px;"></div>
-      </details>
-    </section>
-
-    <!-- ==================== 分頁 3：敘事排版、隨筆與分享 ==================== -->
-    <section id="tab_publish" style="display:none;">
-      <div class="publish-desk-grid">
-        <div class="box">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-            <div style="display:flex;gap:6px;">
-              <button class="btn sm active" id="pbtn_ig" onclick="setPlat('ig')">IG 雜誌直幅 (4:5)</button>
-              <button class="btn sm" id="pbtn_fb" onclick="setPlat('fb')">Facebook 敘事</button>
-              <button class="btn sm" id="pbtn_threads" onclick="setPlat('threads')">Threads 短札</button>
-            </div>
-            <label style="font-size:12px;color:var(--muted);cursor:pointer;">
-              <input type="checkbox" id="indepChk" onchange="toggleIndep()" /> 此平台獨立排序
-            </label>
-          </div>
-
-          <div class="stage">
-            <button class="stage-nav prev" onclick="stepStage(-1)" title="上一幀 (←)">‹</button>
-            <img id="stageImg" src="" alt="燈箱預覽" />
-            <button class="stage-nav next" onclick="stepStage(1)" title="下一幀 (→)">›</button>
-          </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;font-family:var(--font-mono);">
-            <span id="stageTitle">FRAME 01 / 08</span>
-            <span id="publishStripHint" style="font-family:var(--font-sans);">拖曳下方底片格或點 ◀ ▶ 微調順序</span>
-          </div>
-          <div class="film-strip-wrap">
-            <span class="film-edge-code">CONTACT SHEET ORDER</span>
-            <div class="strip" id="publishStrip"></div>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="step-tag">MANUSCRIPT &amp; POST // 旅行隨筆原稿</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-            <select id="varSel" class="text-in" style="width:auto;min-width:165px;font-family:var(--font-serif);font-weight:600;" onchange="onVarChange()">
-              <option value="narrative">敘事生活版（溫暖細膩）</option>
-              <option value="short">精簡短版（留白節奏）</option>
-              <option value="humor">幽默自嘲版（輕鬆日常）</option>
-            </select>
-            <div style="display:flex;gap:6px;">
-              <button class="btn sm primary" id="btnGenCap" onclick="runGeminiCaptionsOnly()">請 AI 重新看圖潤筆</button>
-            </div>
-          </div>
-
-          <textarea id="capBox" class="text-in lined-paper" style="min-height:224px;" oninput="saveCurCaption()"></textarea>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
-            <button class="btn green" onclick="shareNative()">複製隨筆＋分享相片</button>
-            <button class="btn primary" onclick="sendToTelegramMobile()">傳送至 Telegram 備份</button>
-            <button class="btn" onclick="copyTextOnly()">僅複製隨筆文字</button>
-            <button class="btn" onclick="downloadExportedFiles()">下載無 GPS 編號相片</button>
-          </div>
-          <button class="btn sm block" style="margin-top:8px;" onclick="saveToStyleProfile()">
-            將目前潤飾好的文字收錄為個人文風範例
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 分頁 4：暗房設定與文風 ==================== -->
-    <section id="tab_settings" style="display:none;">
       <div class="box">
         <div class="step-tag">VAULT UNLOCK // 雲端環境變數解鎖</div>
-        <div class="sec-title">以通行密碼（APP_PIN）一鍵解鎖 GitHub 環境變數金鑰</div>
-        <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.5;">
-          若已在 GitHub Actions Secrets 設定 <code>APP_PIN</code> 與金鑰，輸入通行密碼即可自動解密並帶入此裝置瀏覽器：
-        </div>
+        <div class="sec-title">以通行密碼（APP_PIN）一鍵解鎖 GitHub 環境變數</div>
         <div style="display:flex;gap:8px;">
           <input id="pinUnlockIn" class="text-in" autocomplete="off" data-form-type="other" style="-webkit-text-security:disc;" placeholder="輸入你在 GitHub 設定的 APP_PIN" onkeydown="if(event.key==='Enter') unlockVaultWithPin('pinUnlockIn')" />
           <button class="btn sm green" style="white-space:nowrap;" onclick="unlockVaultWithPin('pinUnlockIn')">解鎖金鑰</button>
@@ -946,19 +912,17 @@
       </div>
 
       <div class="box">
-        <div class="step-tag">API CREDENTIALS // 視覺與文字模型</div>
-        <div class="sec-title">Google Gemini API 金鑰（安全儲存於此裝置瀏覽器）</div>
-        <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.6;">
-          用於觀察相片光影細節、初選代表作並依你的個人語氣撰寫隨筆（支援 Google AI Studio 免費額度）：<br />
-          1. 前往 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);font-weight:600;">aistudio.google.com/apikey</a> 登入 Google 帳號<br />
-          2. 點選「<strong>Create API key</strong>」→ 複製 <code>AQ.</code> 或 <code>AIza...</code> 開頭的金鑰貼於下方：
+        <div class="step-tag">API CREDENTIALS</div>
+        <div class="sec-title">Google Gemini API 金鑰（安全儲存於此瀏覽器）</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
+          前往 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);font-weight:600;">aistudio.google.com/apikey</a> 點「Create API key」即可免費取得：
         </div>
         <input type="text" id="geminiKeyIn" class="text-in" autocomplete="off" data-form-type="other" spellcheck="false" style="-webkit-text-security:disc;" placeholder="貼上 AQ.Ab8RN6... 或 AIzaSy... 金鑰" onchange="saveSettings()" />
       </div>
 
       <div class="box">
-        <div class="step-tag">TELEGRAM DISPATCH // 跨裝置傳圖</div>
-        <div class="sec-title">Telegram Bot 設定（選填，將排好序的原畫質相片傳至聊天室）</div>
+        <div class="step-tag">TELEGRAM DISPATCH</div>
+        <div class="sec-title">Telegram Bot 設定（傳送原畫質編號相片至聊天室）</div>
         <input id="tgTokenIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="Bot Token（例如 9124449600:AAG...）" onchange="saveSettings()" />
         <div style="display:flex;gap:8px;margin-top:8px;">
           <input id="tgChatIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="Chat ID（點右側按鈕自動偵測）" onchange="saveSettings()" />
@@ -970,13 +934,10 @@
       </div>
 
       <div class="box">
-        <div class="step-tag">STYLE REVERSE ENGINEERING // 個人文風萃取</div>
+        <div class="step-tag">STYLE REVERSE ENGINEERING</div>
         <div class="sec-title">從過往部落格或舊貼文自動逆向分析個人文風</div>
-        <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.6;">
-          輸入你的 Google Blogger 網址，或貼上 2～5 篇過往寫過的貼文，讓 Gemini 進行「五大維度逆向工程」，整理出專屬於你的語氣與用字習慣：
-        </div>
-        <input id="blogUrlIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="選填：Google Blogger 網址（如 https://xxx.blogspot.com）" value="https://jeffwang0211.blogspot.com/" />
-        <textarea id="rawPostsIn" class="text-in lined-paper" style="min-height:112px;margin-top:8px;" placeholder="或直接貼上 2～5 篇以前寫過的貼文（多篇之間可用 --- 分隔）..."></textarea>
+        <input id="blogUrlIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="選填：Google Blogger 網址" value="https://jeffwang0211.blogspot.com/" />
+        <textarea id="rawPostsIn" class="text-in lined-paper" style="min-height:96px;margin-top:8px;" placeholder="或直接貼上 2～5 篇以前寫過的貼文（多篇之間可用 --- 分隔）..."></textarea>
         <button class="btn primary block" id="btnLearnStyle" style="margin-top:8px;" onclick="learnStyleFromSamples()">
           分析並更新我的個人文風參照檔
         </button>
@@ -984,34 +945,184 @@
 
       <div class="box">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
-          <div>
-            <div class="step-tag">STYLE PROFILE</div>
-            <div class="sec-title" style="margin-bottom:0;">目前的個人文風參照檔（<code>style_profile</code>）</div>
-          </div>
+          <div class="sec-title" style="margin:0;">目前的個人文風參照檔（<code>style_profile</code>）</div>
           <div style="display:flex;gap:6px;">
             <input type="file" id="styleFileIn" accept=".yaml,.yml,.json" style="display:none;" onchange="importStyleFile(this.files[0]); this.value='';" />
-            <button class="btn sm" onclick="document.getElementById('styleFileIn').click()">匯入設定檔</button>
+            <button class="btn sm" onclick="document.getElementById('styleFileIn').click()">匯入</button>
             <button class="btn sm" onclick="exportStyleFile()">匯出 .yaml</button>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">人設與語調（Persona &amp; Tone）：</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">人設與語調（Persona &amp; Tone）：</div>
         <input id="styleToneIn" class="text-in" onchange="saveSettings()" />
-        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">偏好慣用詞（Preferred Terms，以逗號分隔）：</div>
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 4px;">偏好慣用詞（以逗號分隔）：</div>
         <input id="stylePrefIn" class="text-in" onchange="saveSettings()" />
-        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">嚴格禁用詞（Forbidden Phrases，以逗號分隔）：</div>
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 4px;">嚴格禁用詞（以逗號分隔）：</div>
         <input id="styleForbidIn" class="text-in" onchange="saveSettings()" />
-        <div style="font-size:12px;color:var(--muted);margin:8px 0 6px;">歷史真實貼文範例（Few-Shot Examples）：</div>
-        <textarea id="styleExIn" class="text-in lined-paper" style="min-height:140px;" onchange="saveSettings()"></textarea>
+        <div style="font-size:12px;color:var(--muted);margin:8px 0 4px;">歷史真實貼文範例：</div>
+        <textarea id="styleExIn" class="text-in lined-paper" style="min-height:120px;" onchange="saveSettings()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- 暗房顯影液進度盤（匯入或解壓縮 .zip 時顯示） -->
+    <div class="progress-wrap" id="progWrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;">
+        <span id="progText" style="font-family:var(--font-serif);font-weight:600;">正在本機暗房檢視對焦與光影層次...</span>
+        <span id="progNum" style="font-family:var(--font-mono);color:var(--amber);">FRAME 0 / 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+
+    <!-- ==================== 狀態 A：尚未選照片時的歡迎工作桌 ==================== -->
+    <section id="welcomeSection" class="box welcome-hero">
+      <div class="step-tag">STEP 01 // OPEN YOUR FILM ROLL</div>
+      <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;margin:4px 0 8px;">先把這趟旅行的照片攤開在工作桌上吧</div>
+      <div style="font-size:13.5px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.65;" id="welcomeDesc">
+        不用先想標題！直接投入照片或 Google 相簿下載的 <code>.zip</code> 壓縮包，所有清晰度計算、連拍去重與時段分群皆<strong>直接在你的瀏覽器本機記憶體內完成</strong>，原圖絕不上傳雲端。
+      </div>
+
+      <div class="dropzone-desk" id="photoDropzone" onclick="document.getElementById('fileAutoIn').click()">
+        <div class="dropzone-icon">35MM CONTACT SHEET &amp; ZIP SUPPORT</div>
+        <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;margin-bottom:6px;" id="dropzoneMainText">
+          點此選取旅行照片（或 Google 相簿 .zip），亦可直接拖放至此
+        </div>
+        <div style="font-size:12.5px;color:var(--muted);">
+          自動濾除模糊與連拍重複，依時段初選 8 幀代表作；進工作台後可隨時放大檢視與微調
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px;">
+        <button class="btn primary" style="padding:11px 22px;font-size:14px;" onclick="document.getElementById('fileAutoIn').click()">
+          ＋ 選取旅行照片或 .zip 壓縮包（自動初選 8 幀）
+        </button>
+        <button class="btn amber" style="padding:11px 18px;font-size:13.5px;" onclick="document.getElementById('fileManualIn').click()">
+          📌 直接匯入私藏必留照片（自動貼上 KEEP 膠帶）
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== 狀態 B：一氣呵成暗房工作台（匯入照片後顯示） ==================== -->
+    <section id="workspaceSection" style="display:none;">
+      <!-- 頂部常駐：全站唯一一條 35mm 已選底片排序軌 -->
+      <div class="sticky-film-tray">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <div>
+            <span class="step-tag" style="margin-right:6px;">SELECTED ROLL</span>
+            <strong style="font-family:var(--font-serif);font-size:14.5px;" id="filmStripHint">
+              已選 35mm 底片軌（拖曳底片格調整貼文順序，點擊任一格放大檢視）
+            </strong>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <button class="btn sm primary" id="btnAiCurate" onclick="runGeminiCurate()">✨ AI 看圖挑 8 幀＋寫隨筆</button>
+            <button class="btn sm" onclick="reselectLocal(true)">🔄 換一批（保留必留膠帶）</button>
+            <button class="btn sm" onclick="reselectLocal(false)">＋ 補滿 8 幀</button>
+            <button class="btn sm amber" onclick="document.getElementById('fileManualIn').click()">📌 追加必留照</button>
+          </div>
+        </div>
+
+        <div class="film-strip-wrap">
+          <span class="film-edge-code">KODAK PORTRA 400 · ANALOG ARCHIVE</span>
+          <div class="strip" id="unifiedStrip"></div>
+        </div>
+      </div>
+
+      <!-- 電腦版左右雙欄同畫面連動（左：接觸印相挑圖牆；右：扉頁標題＋備註＋隨筆與發布） -->
+      <div class="workspace-split">
+        <!-- 左欄：接觸印相挑圖牆 -->
+        <div id="pane_cull">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px;">
+            <div style="font-size:12.5px;color:var(--muted);">
+              💡 <strong>操作提示</strong>：點<strong>照片本體</strong>可放大看高清原圖；點下方按鈕可<strong>選入底片軌</strong>或貼上<strong>必留膠帶</strong>。
+            </div>
+            <label style="font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;">
+              <input type="checkbox" id="onlyNewChk" onchange="renderWorkspace()" /> 僅看新追加
+            </label>
+          </div>
+
+          <div id="clustersWrap"></div>
+
+          <details class="box">
+            <summary style="cursor:pointer;font-family:var(--font-serif);font-weight:700;font-size:13.5px;color:var(--muted);" id="rejSummary">
+              展開「暗房淘汰底片夾」（點選即可救回並貼上必留膠帶）
+            </summary>
+            <div class="photo-grid" id="rejGrid" style="margin-top:12px;"></div>
+          </details>
+        </div>
+
+        <!-- 右欄（Sticky 常駐）：扉頁標題＋心情備註＋燈箱預覽＋隨筆手札與發布 -->
+        <div id="pane_story" class="story-sticky-col">
+          <!-- 邊看照片邊寫標題與備註（再也不用跳回第一頁！） -->
+          <div class="box">
+            <div class="step-tag">JOURNAL CONTEXT // 邊看照片邊記下故事</div>
+            <div class="sec-title">旅程扉頁標題與隨筆備註</div>
+            <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+              <input id="tripNameIn" class="text-in" autocomplete="off" data-form-type="other" placeholder="旅程標題（如：115-11-06_爬爬硬漢嶺）" value="週末小旅行" oninput="APP.trip = this.value || '週末小旅行'; markCaptionDirty(); updateHeader();" />
+              <textarea id="tripNoteIn" class="text-in lined-paper" autocomplete="off" data-form-type="other" style="min-height:66px;" placeholder="看著左邊挑好的照片，隨手記下店名、景點或好笑插曲（點下方 AI 潤筆時將自動寫進隨筆裡）..." oninput="APP.tripNote = this.value; markCaptionDirty();"></textarea>
+            </div>
+          </div>
+
+          <!-- 平台預覽與隨筆原稿紙 -->
+          <div class="box">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+              <div style="display:flex;gap:5px;">
+                <button class="btn sm active" id="pbtn_ig" onclick="setPlat('ig')">IG 直幅 (4:5)</button>
+                <button class="btn sm" id="pbtn_fb" onclick="setPlat('fb')">Facebook</button>
+                <button class="btn sm" id="pbtn_threads" onclick="setPlat('threads')">Threads</button>
+              </div>
+              <label style="font-size:11.5px;color:var(--muted);cursor:pointer;">
+                <input type="checkbox" id="indepChk" onchange="toggleIndep()" /> 此平台獨立排序
+              </label>
+            </div>
+
+            <!-- 燈箱大圖預覽（點擊可開啟全螢幕高清原圖） -->
+            <div class="stage" onclick="openCurrentStageInLightbox()" title="點此開啟全螢幕高清放大檢視">
+              <button class="stage-nav prev" onclick="event.stopPropagation(); stepStage(-1)" title="上一幀 (←)">‹</button>
+              <img id="stageImg" src="" alt="燈箱預覽" />
+              <button class="stage-nav next" onclick="event.stopPropagation(); stepStage(1)" title="下一幀 (→)">›</button>
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;font-family:var(--font-mono);">
+              <span id="stageTitle">FRAME 01 / 08</span>
+              <span style="font-family:var(--font-sans);">點預覽圖可全螢幕放大 · 方向鍵 ← → 翻閱</span>
+            </div>
+
+            <!-- 當照片或備註有變動時，主動提示同步重寫 -->
+            <div class="dirty-banner" id="dirtyBanner">
+              <span>💡 你剛調整了入選底片或旅程備註，要讓 AI 同步更新隨筆嗎？</span>
+              <button class="btn sm amber" style="white-space:nowrap;" onclick="runGeminiCaptionsOnly()">立即同步重寫</button>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <select id="varSel" class="text-in" style="width:auto;min-width:165px;font-family:var(--font-serif);font-weight:600;" onchange="onVarChange()">
+                <option value="narrative">敘事生活版（溫暖細膩）</option>
+                <option value="short">精簡短版（留白節奏）</option>
+                <option value="humor">幽默自嘲版（輕鬆日常）</option>
+              </select>
+              <button class="btn sm primary" id="btnGenCap" onclick="runGeminiCaptionsOnly()">✨ 請 AI 依照片與備註潤筆</button>
+            </div>
+
+            <textarea id="capBox" class="text-in lined-paper" style="min-height:210px;" oninput="saveCurCaption()"></textarea>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+              <button class="btn green" onclick="copyTextOnly()">📋 複製隨筆文字</button>
+              <button class="btn primary" onclick="sendToTelegramMobile()">📤 傳送至 Telegram</button>
+              <button class="btn amber" onclick="downloadExportedZip()">📦 打包下載 .zip (含相片與隨筆)</button>
+              <button class="btn" onclick="shareNative()">📲 系統分享 / 逐張下載</button>
+            </div>
+            <button class="btn sm block" style="margin-top:8px;" onclick="saveToStyleProfile()">
+              ⭐ 將目前潤飾好的文字收錄為個人文風範例
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- 手機版底部懸浮膠囊導覽列（電腦版自動隱藏） -->
+  <!-- 手機版底部懸浮三鍵導覽列（電腦 ≥980px 自動隱藏，因電腦版直接左右雙欄並排） -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav_import" onclick="goTab('import')"><span class="ico">Ⅰ</span><span>扉頁選片</span></button>
-    <button class="nav-btn" id="nav_review" onclick="goTab('review')"><span class="ico">Ⅱ</span><span>印相挑圖</span></button>
-    <button class="nav-btn" id="nav_publish" onclick="goTab('publish')"><span class="ico">Ⅲ</span><span>敘事隨筆</span></button>
-    <button class="nav-btn" id="nav_settings" onclick="goTab('settings')"><span class="ico">Ⅳ</span><span>文風設定</span></button>
+    <button class="nav-btn active" id="nav_cull" onclick="goMobilePane('cull')"><span class="ico">①</span><span>挑圖與排序</span></button>
+    <button class="nav-btn" id="nav_story" onclick="goMobilePane('story')"><span class="ico">②</span><span>隨筆與發布</span></button>
+    <button class="nav-btn" id="nav_settings" onclick="openSettingsDrawer()"><span class="ico">⚙️</span><span>文風設定</span></button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -1032,9 +1143,13 @@
     // ==================== 全域狀態 ====================
     const APP = {
       trip: "週末小旅行",
+      tripCustomEdited: false,
       tripNote: "",
       batch: 0,
-      photos: [], // { id, file, name, takenAt, dhash, blur, dark, bright, quality, cluster, burstGroup, status, rejectReason, origin, locked, dismissed, warnings, aiReason, thumbUrl }
+      mobilePane: "cull", // 'cull' | 'story'
+      lightboxPhotoId: null,
+      captionDirty: false,
+      photos: [], // { id, file, name, takenAt, dhash, blur, dark, bright, quality, cluster, burstGroup, status, rejectReason, origin, locked, dismissed, warnings, aiReason, thumbUrl, fullUrl }
       clusters: [],
       orders: { shared: [], ig: null, fb: null, threads: null, aiSuggested: [] },
       plat: "ig",
@@ -1050,7 +1165,6 @@
     // 由 GitHub Actions 在部署時以 APP_PIN 自動加密注入（原始碼中保持空白，絕不暴露明文金鑰）
     const ENCRYPTED_VAULT = "";
 
-    // 注意：公開於 GitHub Pages 時，原始碼內不放私密金鑰（避免被 GitHub 掃描撤銷）；金鑰儲存於瀏覽器本機 localStorage
     const DEFAULT_SETTINGS = {
       settingsVersion: 3,
       geminiKey: "",
@@ -1072,7 +1186,6 @@
       localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
     }
 
-    // 1. 支援從網址 #key=...&tg=...&chat=... 一次性匯入金鑰並自動清除網址列（不會傳送到任何伺服器）
     if (window.location.hash.length > 1) {
       const hp = new URLSearchParams(window.location.hash.slice(1));
       let changed = false;
@@ -1085,7 +1198,6 @@
       }
     }
 
-    // 2. 若在本機伺服器開啟且尚未填寫金鑰，自動從本機 /api/client-config 帶入
     if (!SETTINGS.geminiKey || !SETTINGS.tgToken) {
       fetch("/api/client-config").then(r => r.ok ? r.json() : null).then(cfg => {
         if (!cfg) return;
@@ -1096,8 +1208,8 @@
         initSettingsUI();
       }).catch(() => {});
     }
-    let reviewSortable = null;
-    let publishSortable = null;
+
+    let unifiedSortable = null;
 
     function toast(msg) {
       const el = document.getElementById("toast");
@@ -1129,16 +1241,22 @@
       toast("設定已妥善收進本機手札");
     }
 
-    function goTab(name) {
-      ["import", "review", "publish", "settings"].forEach(t => {
-        document.getElementById(`tab_${t}`).style.display = t === name ? "block" : "none";
-        const mBtn = document.getElementById(`nav_${t}`);
-        if (mBtn) mBtn.classList.toggle("active", t === name);
-        const dBtn = document.getElementById(`dnav_${t}`);
-        if (dBtn) dBtn.classList.toggle("active", t === name);
-      });
-      if (name === "review") renderReview();
-      if (name === "publish") renderPublish();
+    function openSettingsDrawer() {
+      document.getElementById("settingsModal").style.display = "flex";
+    }
+    function closeSettingsDrawer() {
+      document.getElementById("settingsModal").style.display = "none";
+    }
+
+    function goMobilePane(pane) {
+      APP.mobilePane = pane;
+      const isDesktop = window.matchMedia("(min-width: 980px)").matches;
+      if (!isDesktop) {
+        document.getElementById("pane_cull").style.display = pane === "cull" ? "block" : "none";
+        document.getElementById("pane_story").style.display = pane === "story" ? "block" : "none";
+      }
+      document.getElementById("nav_cull")?.classList.toggle("active", pane === "cull");
+      document.getElementById("nav_story")?.classList.toggle("active", pane === "story");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1148,6 +1266,154 @@
       const locked = APP.photos.filter(p => p.locked).length;
       document.getElementById("hdrStat").textContent =
         APP.photos.length ? `共 ${APP.photos.length} 幀｜入選 ${sel} (必留 ${locked})` : "尚未攤開相片";
+      document.getElementById("btnResetTop").style.display = APP.photos.length ? "inline-flex" : "none";
+      document.getElementById("welcomeSection").style.display = APP.photos.length ? "none" : "block";
+      document.getElementById("workspaceSection").style.display = APP.photos.length ? "block" : "none";
+      goMobilePane(APP.mobilePane);
+    }
+
+    function markCaptionDirty() {
+      if (!APP.photos.length) return;
+      APP.captionDirty = true;
+      const b = document.getElementById("dirtyBanner");
+      if (b && SETTINGS.geminiKey) b.style.display = "flex";
+    }
+
+    function clearCaptionDirty() {
+      APP.captionDirty = false;
+      const b = document.getElementById("dirtyBanner");
+      if (b) b.style.display = "none";
+    }
+
+    // ==================== 原生瀏覽器端 .zip 解壓縮與打包（免外掛） ====================
+    async function extractImagesFromZip(zipFile, onProgress) {
+      const buf = await zipFile.arrayBuffer();
+      const view = new DataView(buf);
+      const bytes = new Uint8Array(buf);
+      // 尋找 End of Central Directory (0x06054b50)
+      let eocd = -1;
+      for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
+        if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+      }
+      if (eocd === -1) throw new Error("無法識別的 ZIP 結構");
+
+      const totalEntries = view.getUint16(eocd + 10, true);
+      const cdOffset = view.getUint32(eocd + 16, true);
+      let pos = cdOffset;
+      const extracted = [];
+
+      for (let idx = 0; idx < totalEntries; idx++) {
+        if (pos + 46 > bytes.length || view.getUint32(pos, true) !== 0x02014b50) break;
+        const method = view.getUint16(pos + 10, true);
+        const compSize = view.getUint32(pos + 20, true);
+        const nameLen = view.getUint16(pos + 28, true);
+        const extraLen = view.getUint16(pos + 30, true);
+        const commentLen = view.getUint16(pos + 32, true);
+        const localHeaderOffset = view.getUint32(pos + 42, true);
+        const nameBytes = bytes.subarray(pos + 46, pos + 46 + nameLen);
+        const fullName = new TextDecoder("utf-8").decode(nameBytes);
+        pos += 46 + nameLen + extraLen + commentLen;
+
+        const baseName = fullName.split("/").pop() || "";
+        if (!baseName || baseName.startsWith(".") || !/\.(jpe?g|png|webp|heic|heif)$/i.test(baseName)) continue;
+
+        if (localHeaderOffset + 30 > bytes.length) continue;
+        const lNameLen = view.getUint16(localHeaderOffset + 26, true);
+        const lExtraLen = view.getUint16(localHeaderOffset + 28, true);
+        const dataStart = localHeaderOffset + 30 + lNameLen + lExtraLen;
+        const rawSlice = bytes.subarray(dataStart, dataStart + compSize);
+
+        let fileBytes = null;
+        if (method === 0) {
+          fileBytes = rawSlice;
+        } else if (method === 8 && typeof DecompressionStream !== "undefined") {
+          const ds = new DecompressionStream("deflate-raw");
+          const writer = ds.writable.getWriter();
+          writer.write(rawSlice);
+          writer.close();
+          const outBuf = await new Response(ds.readable).arrayBuffer();
+          fileBytes = new Uint8Array(outBuf);
+        }
+        if (fileBytes) {
+          const ext = baseName.split(".").pop().toLowerCase();
+          const mime = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
+          extracted.push(new File([fileBytes], baseName, { type: mime }));
+          if (onProgress) onProgress(extracted.length);
+        }
+      }
+      return extracted;
+    }
+
+    function crc32(u8) {
+      let c = -1;
+      for (let i = 0; i < u8.length; i++) {
+        c = (c >>> 8) ^ CRC_TABLE[(c ^ u8[i]) & 0xff];
+      }
+      return (c ^ -1) >>> 0;
+    }
+    const CRC_TABLE = (() => {
+      const t = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+        t[n] = c >>> 0;
+      }
+      return t;
+    })();
+
+    function createStoreZipBlob(entries) {
+      // entries: [{ name: string, data: Uint8Array }]
+      const localParts = [];
+      const cdParts = [];
+      let offset = 0;
+      const enc = new TextEncoder();
+
+      for (const item of entries) {
+        const nameBytes = enc.encode(item.name);
+        const crc = crc32(item.data);
+        const size = item.data.length;
+
+        const lh = new Uint8Array(30 + nameBytes.length);
+        const lv = new DataView(lh.buffer);
+        lv.setUint32(0, 0x04034b50, true);
+        lv.setUint16(4, 20, true);
+        lv.setUint16(6, 0x0800, true); // UTF-8 flag
+        lv.setUint16(8, 0, true);      // store
+        lv.setUint32(14, crc, true);
+        lv.setUint32(18, size, true);
+        lv.setUint32(22, size, true);
+        lv.setUint16(26, nameBytes.length, true);
+        lh.set(nameBytes, 30);
+
+        const cd = new Uint8Array(46 + nameBytes.length);
+        const cv = new DataView(cd.buffer);
+        cv.setUint32(0, 0x02014b50, true);
+        cv.setUint16(4, 20, true);
+        cv.setUint16(6, 20, true);
+        cv.setUint16(8, 0x0800, true);
+        cv.setUint16(10, 0, true);
+        cv.setUint32(16, crc, true);
+        cv.setUint32(20, size, true);
+        cv.setUint32(24, size, true);
+        cv.setUint16(28, nameBytes.length, true);
+        cv.setUint32(42, offset, true);
+        cd.set(nameBytes, 46);
+
+        localParts.push(lh, item.data);
+        cdParts.push(cd);
+        offset += lh.length + size;
+      }
+
+      const cdSize = cdParts.reduce((s, a) => s + a.length, 0);
+      const eocd = new Uint8Array(22);
+      const ev = new DataView(eocd.buffer);
+      ev.setUint32(0, 0x06054b50, true);
+      ev.setUint16(8, entries.length, true);
+      ev.setUint16(10, entries.length, true);
+      ev.setUint32(12, cdSize, true);
+      ev.setUint32(16, offset, true);
+
+      return new Blob([...localParts, ...cdParts, eocd], { type: "application/zip" });
     }
 
     // ==================== 本機端 EXIF 時間讀取與暗房影像快篩 ====================
@@ -1160,7 +1426,6 @@
           return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]), Number(m[6]));
         }
       } catch (e) {}
-      // 檔名時間推測（PXL_YYYYMMDD_HHMMSS 或 13 位毫秒）
       const pxl = file.name.match(/PXL_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
       if (pxl) {
         return new Date(Date.UTC(Number(pxl[1]), Number(pxl[2]) - 1, Number(pxl[3]), Number(pxl[4]), Number(pxl[5]), Number(pxl[6])));
@@ -1172,7 +1437,7 @@
 
     async function analyzeFileOnPhone(file) {
       const bmp = await createImageBitmap(file);
-      const maxSide = 512;
+      const maxSide = 640;
       const scale = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
       const w = Math.max(16, Math.round(bmp.width * scale));
       const h = Math.max(16, Math.round(bmp.height * scale));
@@ -1182,7 +1447,7 @@
       canvas.height = h;
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       ctx.drawImage(bmp, 0, 0, w, h);
-      const thumbUrl = canvas.toDataURL("image/jpeg", 0.82);
+      const thumbUrl = canvas.toDataURL("image/jpeg", 0.84);
 
       const imgData = ctx.getImageData(0, 0, w, h).data;
       const gray = new Float32Array(w * h);
@@ -1194,7 +1459,6 @@
         if (g > 245) brightCnt++;
       }
 
-      // Laplacian 方差模糊度
       let sum = 0, sumSq = 0, cnt = 0;
       for (let y = 1; y < h - 1; y++) {
         for (let x = 1; x < w - 1; x++) {
@@ -1208,7 +1472,6 @@
       const mean = sum / (cnt || 1);
       const blur = Math.max(0, Math.round((sumSq / (cnt || 1) - mean * mean) * 10) / 10);
 
-      // 64-bit 差值雜湊 dHash（9x8）
       const hc = document.createElement("canvas");
       hc.width = 9;
       hc.height = 8;
@@ -1242,26 +1505,58 @@
       return d;
     }
 
-    async function handleFiles(fileList, origin) {
-      const files = Array.from(fileList || []).filter(f => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name));
-      if (!files.length) return;
+    async function handleIncomingFiles(fileList, forceManualLock) {
+      const rawArr = Array.from(fileList || []);
+      if (!rawArr.length) return;
 
-      APP.batch += 1;
-      const curBatch = APP.batch;
       const wrap = document.getElementById("progWrap");
       const fill = document.getElementById("progFill");
       const num = document.getElementById("progNum");
       const txt = document.getElementById("progText");
       wrap.style.display = "block";
 
+      const imageFiles = [];
+      for (const f of rawArr) {
+        if (/\.zip$/i.test(f.name) || f.type === "application/zip" || f.type === "application/x-zip-compressed") {
+          txt.textContent = `正在本機解壓縮 ${f.name}...`;
+          fill.style.width = "25%";
+          // 若尚未自訂旅程名稱，自動取 ZIP 檔名作為預設標題
+          if (!APP.tripCustomEdited && APP.trip === "週末小旅行") {
+            const cleanTitle = f.name.replace(/\.zip$/i, "").replace(/-\d+-\d+$/, "");
+            if (cleanTitle) {
+              APP.trip = cleanTitle;
+              document.getElementById("tripNameIn").value = cleanTitle;
+            }
+          }
+          try {
+            const unzipped = await extractImagesFromZip(f, (cnt) => {
+              num.textContent = `UNZIP ${cnt}`;
+            });
+            imageFiles.push(...unzipped);
+          } catch (e) {
+            alert(`解壓縮 ${f.name} 失敗：` + e.message);
+          }
+        } else if (f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name)) {
+          imageFiles.push(f);
+        }
+      }
+
+      if (!imageFiles.length) {
+        wrap.style.display = "none";
+        return;
+      }
+
+      const origin = forceManualLock ? "manual" : "auto";
+      APP.batch += 1;
+      const curBatch = APP.batch;
       const existingKeys = new Set(APP.photos.map(p => `${p.name}_${p.file.size}`));
       let added = 0, skipped = 0;
 
-      for (let i = 0; i < files.length; i++) {
-        const f = files[i];
-        txt.textContent = origin === "manual" ? "正在為私藏相片貼上必留和紙膠帶..." : "正在本機暗房檢視光影、清晰度與連拍去重...";
-        num.textContent = `FRAME ${String(i + 1).padStart(2, "0")} / ${String(files.length).padStart(2, "0")}`;
-        fill.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+      for (let i = 0; i < imageFiles.length; i++) {
+        const f = imageFiles[i];
+        txt.textContent = forceManualLock ? "正在為私藏相片貼上必留和紙膠帶..." : "正在本機暗房檢視光影、清晰度與連拍去重...";
+        num.textContent = `FRAME ${String(i + 1).padStart(2, "0")} / ${String(imageFiles.length).padStart(2, "0")}`;
+        fill.style.width = `${Math.round(((i + 1) / imageFiles.length) * 100)}%`;
 
         const key = `${f.name}_${f.size}`;
         if (existingKeys.has(key)) {
@@ -1285,14 +1580,15 @@
             quality: 0.5,
             cluster: "spot-01",
             burstGroup: null,
-            status: origin === "manual" ? "selected" : "candidate",
+            status: forceManualLock ? "selected" : "candidate",
             rejectReason: null,
             origin,
-            locked: origin === "manual",
+            locked: forceManualLock,
             dismissed: false,
             warnings: [],
-            aiReason: origin === "manual" ? "手動指定私藏必留" : "",
-            thumbUrl: feat.thumbUrl
+            aiReason: forceManualLock ? "手動指定私藏必留" : "",
+            thumbUrl: feat.thumbUrl,
+            fullUrl: null
           });
           existingKeys.add(key);
           added++;
@@ -1301,8 +1597,16 @@
         }
       }
 
+      // 若尚未自訂標題，依第一張照片日期自動帶入溫潤標題
+      if (APP.photos.length && !APP.tripCustomEdited && APP.trip === "週末小旅行") {
+        const d = APP.photos[0].takenAt;
+        const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        APP.trip = `${ymd}_旅行手札`;
+        document.getElementById("tripNameIn").value = APP.trip;
+      }
+
       runLocalFilter();
-      if (origin === "auto") {
+      if (!forceManualLock && APP.orders.shared.length < 8) {
         reselectLocal(false);
       } else {
         syncOrders();
@@ -1310,18 +1614,22 @@
       buildLocalCaptions();
       wrap.style.display = "none";
       updateHeader();
-      toast(`已攤開 ${added} 幀相片（略過重複 ${skipped} 幀）`);
-      goTab("review");
-      if (SETTINGS.geminiKey && APP.photos.length) {
-        runGeminiCaptionsOnly();
+      renderWorkspace();
+      toast(`已攤開 ${added} 幀相片${skipped ? `（略過重複 ${skipped} 幀）` : ""}`);
+    }
+
+    function getFullUrl(p) {
+      if (!p) return "";
+      if (!p.fullUrl && p.file) {
+        p.fullUrl = URL.createObjectURL(p.file);
       }
+      return p.fullUrl || p.thumbUrl;
     }
 
     function runLocalFilter() {
       APP.photos.sort((a, b) => a.takenAt - b.takenAt);
       if (!APP.photos.length) return;
 
-      // 1. 依 40 分鐘切分時段群組
       const groups = [[APP.photos[0]]];
       for (let i = 1; i < APP.photos.length; i++) {
         const p = APP.photos[i];
@@ -1335,7 +1643,6 @@
         return { id: cid, start: g[0].takenAt, end: g[g.length - 1].takenAt, count: g.length };
       });
 
-      // 2. 各群組內計算相對模糊門檻（淘汰後 25%）與綜合品質分數
       const cutoffs = {};
       groups.forEach((g, idx) => {
         const cid = `spot-${String(idx + 1).padStart(2, "0")}`;
@@ -1350,7 +1657,6 @@
         });
       });
 
-      // 3. 連拍分組（只針對非鎖定照片）
       const autoList = APP.photos.filter(p => !p.locked);
       APP.photos.forEach(p => { p.burstGroup = null; });
       const visited = new Set();
@@ -1377,7 +1683,6 @@
         }
       }
 
-      // 4. 狀態判定（鎖定照片一律保留並寫入 warnings）
       APP.photos.forEach(p => {
         p.warnings = [];
         const isBlur = p.blur <= (cutoffs[p.cluster] ?? -1);
@@ -1387,15 +1692,15 @@
         if (p.locked) {
           p.status = "selected";
           p.rejectReason = null;
-          if (isBlur) p.warnings.push("略模糊（已鎖定保留）");
-          if (isExp) p.warnings.push("曝光極端（已鎖定保留）");
+          if (isBlur) p.warnings.push("略失焦（必留保留）");
+          if (isExp) p.warnings.push("曝光極端（必留保留）");
           const sim = APP.photos.find(o => o.id !== p.id && Math.abs(o.takenAt - p.takenAt) <= 600000 && hamming(o.dhash, p.dhash) <= 10);
-          if (sim) p.warnings.push("與其他照片相似（兩張皆保留）");
+          if (sim) p.warnings.push("構圖相似（兩張皆留）");
           return;
         }
         if (isDup) { p.status = "rejected"; p.rejectReason = "連拍相似"; }
         else if (isExp) { p.status = "rejected"; p.rejectReason = "過曝／過暗"; }
-        else if (isBlur) { p.status = "rejected"; p.rejectReason = "模糊淘汰"; }
+        else if (isBlur) { p.status = "rejected"; p.rejectReason = "失焦淘汰"; }
         else {
           p.rejectReason = null;
           if (p.status !== "selected") p.status = "candidate";
@@ -1436,7 +1741,6 @@
         pool = APP.photos.filter(p => p.status === "candidate" && !p.locked);
       }
 
-      // 依時段平均挑選最高分且不相似的照片
       const picked = [];
       const cids = APP.clusters.map(c => c.id);
       const used = new Set(locked.map(p => p.id));
@@ -1449,7 +1753,7 @@
           sub.sort((a, b) => b.quality - a.quality || b.blur - a.blur);
           const best = sub[0];
           best.status = "selected";
-          best.aiReason = `${cid} 高畫質代表照（品質 ${best.quality}）`;
+          best.aiReason = `${cid} 時段代表作（清晰 ${best.blur}）`;
           picked.push(best);
           used.add(best.id);
           added = true;
@@ -1462,11 +1766,14 @@
       APP.orders.shared = [...finalIds];
       syncOrders();
       updateHeader();
-      renderReview();
-      if (dismissCurrent) toast("🔄 已換一批照片（🔒 鎖定照片全數保留）");
+      renderWorkspace();
+      if (dismissCurrent) {
+        markCaptionDirty();
+        toast("已換一批候選底片（必留膠帶相片全數保留）");
+      }
     }
 
-    // ==================== 挑圖與排序介面 ====================
+    // ==================== 全景暗房工作台渲染（單一底片軌＋挑圖牆＋隨筆連動） ====================
     function fmtTime(d) {
       return d.toTimeString().slice(0, 8);
     }
@@ -1475,28 +1782,32 @@
       return APP.orders[APP.plat] || APP.orders.shared || [];
     }
 
-    function buildStripHTML(ids, mode) {
+    function buildStripHTML(ids) {
+      if (!ids.length) {
+        return `<div style="color:#9A948A;font-size:12px;display:flex;align-items:center;padding:0 12px;">目前尚未選入底片，請從下方相紙牆點選「＋ 選入」</div>`;
+      }
       return ids.map((id, idx) => {
         const p = APP.photos.find(x => x.id === id);
         if (!p) return "";
         const frameNo = String(idx + 1).padStart(2, "0") + "A";
+        const isActive = idx === APP.stageIdx;
         return `
-          <div class="strip-item" data-id="${p.id}" onclick="onStripTap(${idx})">
+          <div class="strip-item ${isActive ? 'active-frame' : ''}" data-id="${p.id}" onclick="onStripTap(${idx}, '${p.id}')">
             <img src="${p.thumbUrl}" alt="${p.name}" />
             <span class="num-badge">#${frameNo}${idx === 0 ? ' COVER' : ''}</span>
-            <button class="rm-btn" title="移出本卷" onclick="event.stopPropagation(); toggleSelect('${p.id}', false)">✕</button>
+            <button class="rm-btn" title="從本卷移出" onclick="event.stopPropagation(); toggleSelect('${p.id}', false)">✕</button>
             <div class="move-bar" onclick="event.stopPropagation();">
-              <button onclick="nudgeOrder('${mode}', ${idx}, -1)">◀</button>
+              <button onclick="nudgeOrder(${idx}, -1)" title="往前移">◀</button>
               <span>${p.locked ? 'KEEP' : 'DRAG'}</span>
-              <button onclick="nudgeOrder('${mode}', ${idx}, 1)">▶</button>
+              <button onclick="nudgeOrder(${idx}, 1)" title="往後移">▶</button>
             </div>
           </div>
         `;
       }).join("");
     }
 
-    function nudgeOrder(mode, idx, delta) {
-      const indep = mode === "publish" && document.getElementById("indepChk").checked;
+    function nudgeOrder(idx, delta) {
+      const indep = document.getElementById("indepChk").checked;
       const key = indep ? APP.plat : "shared";
       const arr = [...(APP.orders[key] || APP.orders.shared)];
       const target = idx + delta;
@@ -1504,66 +1815,103 @@
       const [item] = arr.splice(idx, 1);
       arr.splice(target, 0, item);
       APP.orders[key] = arr;
-      if (mode === "review") renderReview();
-      else { APP.stageIdx = target; renderPublish(); }
+      APP.stageIdx = target;
+      renderWorkspace();
     }
 
+    // 點擊右上角「選入／移出」
     function toggleSelect(id, select) {
       const p = APP.photos.find(x => x.id === id);
       if (!p) return;
       if (select) {
         p.status = "selected";
-        p.origin = "manual";
-        p.locked = true;
         p.dismissed = false;
         p.rejectReason = null;
-        if (!p.aiReason) p.aiReason = "手動欽點並貼上必留膠帶";
+        if (!p.aiReason) p.aiReason = "手動選入本卷";
       } else {
         p.locked = false;
         p.dismissed = true;
         p.status = "candidate";
       }
       syncOrders();
+      markCaptionDirty();
       updateHeader();
-      renderReview();
-      renderPublish();
-      toast(select ? "已貼上「KEEP · 必留」和紙膠帶並蓋上入選章" : "已從底片軌取下");
+      renderWorkspace();
+      updateLightboxButtons();
+      toast(select ? "已蓋上「SELECTED · 入選」印章" : "已從底片軌移出");
+    }
+
+    // 點擊「📌 必留膠帶」
+    function toggleLock(id) {
+      const p = APP.photos.find(x => x.id === id);
+      if (!p) return;
+      p.locked = !p.locked;
+      if (p.locked) {
+        p.status = "selected";
+        p.origin = "manual";
+        p.dismissed = false;
+        p.rejectReason = null;
+        if (!p.aiReason) p.aiReason = "貼上私藏必留膠帶";
+      }
+      syncOrders();
+      updateHeader();
+      renderWorkspace();
+      updateLightboxButtons();
+      toast(p.locked ? "📌 已貼上「KEEP · 私藏必留」和紙膠帶（絕不淘汰）" : "已撕下必留膠帶");
     }
 
     function renderCardHTML(p) {
-      const isNew = APP.batch > 1 && p.batch === APP.batch;
-      const warns = (p.warnings || []).map(w => `<div class="chip-warn">${w}</div>`).join("");
-      const rej = p.rejectReason ? `<div class="chip-warn">${p.rejectReason}</div>` : "";
+      const isSel = p.status === "selected";
+      const warns = (p.warnings || []).map(w => `<span class="chip-warn">${w}</span>`).join("");
+      const rej = p.rejectReason ? `<span class="chip-warn">${p.rejectReason}</span>` : "";
       return `
-        <div class="p-card ${p.status === 'selected' ? 'selected' : ''}" onclick="toggleSelect('${p.id}', ${p.status !== 'selected'})">
+        <div class="p-card ${isSel ? 'selected' : ''}">
           ${p.locked ? '<span class="washi-tape">KEEP · 私藏必留</span>' : ''}
-          ${p.status === 'selected' ? '<span class="stamp-badge">SELECTED · 入選</span>' : ''}
-          <img src="${p.thumbUrl}" loading="lazy" />
-          ${isNew ? '<span class="chip-new">NEW</span>' : ''}
+          <div class="p-thumb-wrap" onclick="openLightbox('${p.id}')" title="點此放大檢視高清原圖">
+            <img src="${p.thumbUrl}" loading="lazy" alt="${p.name}" />
+            <span class="zoom-hint">🔍 點擊放大檢視</span>
+            ${isSel ? '<span class="stamp-badge">SELECTED · 入選</span>' : ''}
+          </div>
           <div class="p-info">
             <div>${fmtTime(p.takenAt)} · FOCUS ${p.blur}</div>
             ${p.aiReason ? `<div class="p-reason">${p.aiReason}</div>` : ''}
-            ${warns}${rej}
+            <div>${warns}${rej}</div>
+          </div>
+          <div class="p-actions">
+            <button class="act-pill ${isSel ? 'is-sel' : ''}" onclick="toggleSelect('${p.id}', ${!isSel})">
+              ${isSel ? '✓ 已入選' : '＋ 選入本卷'}
+            </button>
+            <button class="act-pill ${p.locked ? 'is-lock' : ''}" onclick="toggleLock('${p.id}')" title="貼上和紙膠帶後，換一批或 AI 挑圖都絕不會換掉它">
+              ${p.locked ? '📌 必留中' : '📌 貼必留'}
+            </button>
           </div>
         </div>
       `;
     }
 
-    function renderReview() {
-      const strip = document.getElementById("reviewStrip");
-      strip.innerHTML = buildStripHTML(APP.orders.shared, "review");
-      if (reviewSortable) reviewSortable.destroy();
-      reviewSortable = new Sortable(strip, {
+    function renderWorkspace() {
+      if (!APP.photos.length) return;
+      const ids = curPlatOrder();
+      if (APP.stageIdx >= ids.length) APP.stageIdx = 0;
+
+      // 1. 頂部常駐 35mm 底片軌
+      const strip = document.getElementById("unifiedStrip");
+      strip.innerHTML = buildStripHTML(ids);
+      if (unifiedSortable) unifiedSortable.destroy();
+      unifiedSortable = new Sortable(strip, {
         animation: 150,
-        delay: 140,
+        delay: 130,
         delayOnTouchOnly: true,
         onEnd: () => {
-          APP.orders.shared = Array.from(strip.querySelectorAll(".strip-item")).map(el => el.dataset.id);
-          renderReview();
+          const newIds = Array.from(strip.querySelectorAll(".strip-item")).map(el => el.dataset.id);
+          if (document.getElementById("indepChk").checked) APP.orders[APP.plat] = newIds;
+          else APP.orders.shared = newIds;
+          renderWorkspace();
           toast("已更新 35mm 底片敘事順序");
         }
       });
 
+      // 2. 左欄：時段印相挑圖牆
       const onlyNew = document.getElementById("onlyNewChk").checked;
       const wrap = document.getElementById("clustersWrap");
       wrap.innerHTML = APP.clusters.map((c, idx) => {
@@ -1584,8 +1932,93 @@
       }).join("");
 
       const rej = APP.photos.filter(p => p.status === "rejected" && (!onlyNew || p.batch === APP.batch));
-      document.getElementById("rejSummary").textContent = `展開「暗房淘汰底片夾」（共 ${rej.length} 幀，點選任一幀即可救回並貼上必留膠帶）`;
+      document.getElementById("rejSummary").textContent = `展開「暗房淘汰底片夾」（共 ${rej.length} 幀，點選即可救回或放大檢視）`;
       document.getElementById("rejGrid").innerHTML = rej.map(renderCardHTML).join("");
+
+      // 3. 右欄：燈箱舞台與隨筆編輯器（使用高清原圖 URL）
+      document.getElementById("indepChk").checked = Array.isArray(APP.orders[APP.plat]);
+      const curP = APP.photos.find(x => x.id === ids[APP.stageIdx]);
+      document.getElementById("stageImg").src = curP ? getFullUrl(curP) : "";
+      document.getElementById("stageTitle").textContent =
+        `${APP.plat.toUpperCase()} · FRAME ${ids.length ? String(APP.stageIdx + 1).padStart(2, "0") : "00"} / ${String(ids.length).padStart(2, "0")}`;
+
+      const v = APP.captions[APP.activeVar] || {};
+      const capEl = document.getElementById("capBox");
+      if (document.activeElement !== capEl) {
+        capEl.value = v[APP.plat] || "";
+      }
+    }
+
+    // ==================== 原圖高清放大檢視燈箱（Lightbox） ====================
+    function openLightbox(photoId) {
+      const p = APP.photos.find(x => x.id === photoId);
+      if (!p) return;
+      APP.lightboxPhotoId = p.id;
+      const modal = document.getElementById("lightboxModal");
+      modal.style.display = "flex";
+      updateLightboxView();
+    }
+
+    function openCurrentStageInLightbox() {
+      const ids = curPlatOrder();
+      if (!ids.length) return;
+      openLightbox(ids[APP.stageIdx] || ids[0]);
+    }
+
+    function closeLightbox() {
+      document.getElementById("lightboxModal").style.display = "none";
+      APP.lightboxPhotoId = null;
+    }
+
+    function updateLightboxView() {
+      const p = APP.photos.find(x => x.id === APP.lightboxPhotoId);
+      if (!p) return;
+      const idx = APP.photos.findIndex(x => x.id === p.id);
+      document.getElementById("lbImg").src = getFullUrl(p);
+      document.getElementById("lbTitle").textContent = `FRAME ${idx + 1} / ${APP.photos.length} · ${p.name}`;
+      document.getElementById("lbMeta").textContent = `${fmtTime(p.takenAt)} ｜ 清晰度 ${p.blur} ${p.aiReason ? '｜ ' + p.aiReason : ''}`;
+      updateLightboxButtons();
+    }
+
+    function updateLightboxButtons() {
+      const p = APP.photos.find(x => x.id === APP.lightboxPhotoId);
+      if (!p) return;
+      const btnSel = document.getElementById("lbBtnSelect");
+      const btnLock = document.getElementById("lbBtnLock");
+      const isSel = p.status === "selected";
+      btnSel.className = isSel ? "btn sm green" : "btn sm";
+      btnSel.textContent = isSel ? "✓ 已選入底片軌（點此移出 / Space）" : "＋ 選入底片軌 (Space)";
+      btnLock.className = p.locked ? "btn sm amber" : "btn sm";
+      btnLock.textContent = p.locked ? "📌 已貼上必留膠帶 (KEEP)" : "📌 貼上必留膠帶 (KEEP)";
+    }
+
+    function stepLightbox(delta) {
+      if (!APP.lightboxPhotoId || !APP.photos.length) return;
+      const idx = APP.photos.findIndex(x => x.id === APP.lightboxPhotoId);
+      if (idx === -1) return;
+      const nextIdx = (idx + delta + APP.photos.length) % APP.photos.length;
+      APP.lightboxPhotoId = APP.photos[nextIdx].id;
+      updateLightboxView();
+    }
+
+    function toggleLightboxSelect() {
+      if (!APP.lightboxPhotoId) return;
+      const p = APP.photos.find(x => x.id === APP.lightboxPhotoId);
+      if (p) toggleSelect(p.id, p.status !== "selected");
+    }
+
+    function toggleLightboxLock() {
+      if (!APP.lightboxPhotoId) return;
+      toggleLock(APP.lightboxPhotoId);
+    }
+
+    function onStripTap(idx, photoId) {
+      APP.stageIdx = idx;
+      renderWorkspace();
+      const isDesktop = window.matchMedia("(min-width: 980px)").matches;
+      if (!isDesktop && APP.mobilePane === "cull") {
+        openLightbox(photoId);
+      }
     }
 
     function setPlat(plat) {
@@ -1594,62 +2027,26 @@
       ["ig", "fb", "threads"].forEach(k => {
         document.getElementById(`pbtn_${k}`).classList.toggle("active", k === plat);
       });
-      renderPublish();
+      renderWorkspace();
     }
 
     function toggleIndep() {
       const indep = document.getElementById("indepChk").checked;
       APP.orders[APP.plat] = indep ? [...curPlatOrder()] : null;
-      renderPublish();
-      toast(indep ? `已啟用 ${APP.plat.toUpperCase()} 獨立排序` : "已改為共用順序");
-    }
-
-    function onStripTap(idx) {
-      APP.stageIdx = idx;
-      renderPublish();
+      renderWorkspace();
+      toast(indep ? `已啟用 ${APP.plat.toUpperCase()} 獨立排序` : "已改為三平台共用順序");
     }
 
     function stepStage(delta) {
       const ids = curPlatOrder();
       if (!ids.length) return;
       APP.stageIdx = (APP.stageIdx + delta + ids.length) % ids.length;
-      renderPublish();
-    }
-
-    function renderPublish() {
-      const ids = curPlatOrder();
-      if (APP.stageIdx >= ids.length) APP.stageIdx = 0;
-      document.getElementById("indepChk").checked = Array.isArray(APP.orders[APP.plat]);
-
-      const curP = APP.photos.find(x => x.id === ids[APP.stageIdx]);
-      document.getElementById("stageImg").src = curP ? curP.thumbUrl : "";
-      document.getElementById("stageTitle").textContent =
-        `${APP.plat.toUpperCase()} 預覽（第 ${ids.length ? APP.stageIdx + 1 : 0} / ${ids.length} 張）`;
-
-      const strip = document.getElementById("publishStrip");
-      strip.innerHTML = buildStripHTML(ids, "publish");
-      if (publishSortable) publishSortable.destroy();
-      publishSortable = new Sortable(strip, {
-        animation: 150,
-        delay: 140,
-        delayOnTouchOnly: true,
-        onEnd: () => {
-          const newIds = Array.from(strip.querySelectorAll(".strip-item")).map(el => el.dataset.id);
-          if (document.getElementById("indepChk").checked) APP.orders[APP.plat] = newIds;
-          else APP.orders.shared = newIds;
-          APP.stageIdx = 0;
-          renderPublish();
-          toast("✅ 貼文照片順序已更新！");
-        }
-      });
-
-      const v = APP.captions[APP.activeVar] || {};
-      document.getElementById("capBox").value = v[APP.plat] || "";
+      renderWorkspace();
     }
 
     function onVarChange() {
       APP.activeVar = document.getElementById("varSel").value;
-      renderPublish();
+      renderWorkspace();
     }
 
     function saveCurCaption() {
@@ -1662,27 +2059,26 @@
       const sel = ids.map(id => APP.photos.find(p => p.id === id)).filter(Boolean);
       const note = APP.tripNote ? `（${APP.tripNote}）` : "";
       const tag = APP.trip.replace(/[-\s_]/g, "");
-      const waitingHint = SETTINGS.geminiKey ? "⏳ 正在請 Gemini 看照片細節撰寫專屬文案（約 3~5 秒）...\n\n" : "";
 
       APP.captions.narrative = {
         label: "敘事生活版",
-        fb: `${waitingHint}📍 ${APP.trip}${note}\n\n挑了這趟最喜歡的 ${sel.length} 張畫面留個紀錄，老實說整理照片的時候又想再出門一趟了。\n\n#${tag} #日常紀錄 #生活碎片`,
-        ig: `${waitingHint}${APP.trip}${note} ✨\n往左滑看這次最喜歡的 ${sel.length} 個畫面 👉\n\n#${tag} #日常紀錄 #生活感 #隨手拍`,
-        threads: `${waitingHint}${APP.trip}${note} 的 ${sel.length} 個瞬間，老實說這趟真的很值得。`
+        fb: `📍 ${APP.trip}${note}\n\n挑了這趟最喜歡的 ${sel.length} 張畫面留個紀錄，老實說整理照片的時候又想再出門一趟了 😛✨\n\n#${tag} #日常紀錄 #生活碎片`,
+        ig: `${APP.trip}${note} ✨\n往左滑看這次最喜歡的 ${sel.length} 個瞬間 👉\n\n#${tag} #日常紀錄 #生活感 #隨手拍`,
+        threads: `${APP.trip}${note} 的 ${sel.length} 個瞬間，老實說這趟真的很值得 🙌✨`
       };
       APP.captions.short = {
         label: "精簡短版",
-        fb: `${waitingHint}${APP.trip}${note}｜${sel.length} pics\n\n#${tag} #日常紀錄`,
-        ig: `${waitingHint}把喜歡的瞬間都收進相簿裡 ✨（${APP.trip}，${sel.length} pics）\n\n#${tag} #生活碎片 #隨手拍`,
-        threads: `${waitingHint}${APP.trip} 紀錄 ✔️`
+        fb: `${APP.trip}${note}｜${sel.length} pics ☀️\n\n#${tag} #日常紀錄`,
+        ig: `把喜歡的瞬間都收進相簿裡 ✨（${APP.trip}，${sel.length} pics）\n\n#${tag} #生活碎片 #隨手拍`,
+        threads: `${APP.trip} 紀錄 ✔️✨`
       };
       APP.captions.humor = {
         label: "幽默自嘲版",
-        fb: `${waitingHint}${APP.trip}${note}\n原本只是想說隨便拍拍，結果默默還是按了一堆快門，挑出這 ${sel.length} 張精華跟大家分享。\n\n#${tag} #週末日常 #記憶體殺手`,
-        ig: `${waitingHint}出門前說不特別拍照，結果相簿又默默多了一整排 😂\n精選 ${sel.length} 張 ${APP.trip} 現場實況 👉\n\n#${tag} #日常碎念 #週末去哪裡`,
-        threads: `${waitingHint}每次出門都說隨便逛逛，結果手機相簿又差點爆掉 😂`
+        fb: `${APP.trip}${note}\n原本只是想說隨便拍拍，結果默默還是按了一堆快門 😂 挑出這 ${sel.length} 張精華跟大家分享囉！\n\n#${tag} #週末日常 #記憶體殺手`,
+        ig: `出門前說不特別拍照，結果相簿又默默多了一整排 😂\n精選 ${sel.length} 張 ${APP.trip} 現場實況 👉\n\n#${tag} #日常碎念 #週末去哪裡`,
+        threads: `每次出門都說隨便逛逛，結果相簿又差點拍到爆掉 😂✨`
       };
-      renderPublish();
+      renderWorkspace();
     }
 
     async function callGeminiFast(parts) {
@@ -1715,13 +2111,16 @@
 
     async function runGeminiCurate() {
       if (!SETTINGS.geminiKey) {
-        toast("尚未填寫 Gemini API Key，請先到設定頁填寫");
-        goTab("settings");
+        toast("請先解鎖或填寫 Gemini API 金鑰");
+        openSettingsDrawer();
         return;
       }
-      if (!APP.photos.length) { toast("請先選取照片"); return; }
+      if (!APP.photos.length) { toast("請先攤開相片"); return; }
 
-      toast("⏳ AI 正在看圖挑選 8 張並撰寫文案（約 3~5 秒）...");
+      const btn = document.getElementById("btnAiCurate");
+      if (btn) { btn.disabled = true; btn.textContent = "⏳ AI 正在看圖挑片與撰寫隨筆..."; }
+      toast("⏳ AI 正在觀察畫面挑選 8 幀並撰寫隨筆（約 3~5 秒）...");
+
       const locked = APP.photos.filter(p => p.locked);
       const cands = APP.photos
         .filter(p => p.status !== "rejected" && !p.locked && !p.dismissed)
@@ -1739,10 +2138,10 @@
 - 語調：${SETTINGS.tone}
 - 慣用詞：${SETTINGS.preferred}
 - 嚴格禁用詞：${SETTINGS.forbidden}
-- 真實貼文範例（只學習語氣與節奏，切勿照抄範例裡的熱炒、爬山等無關主題）：
+- 真實貼文範例（只學習語氣與節奏，切勿照抄範例裡的無關主題）：
 ${SETTINGS.examples}
 
-請仔細觀察以下照片縮圖的真實內容（例如：食物、餐廳、街景、室內、人物表情、風景、寵物或日常物品，照片拍什麼就寫什麼，若不是爬山千萬不要寫爬山），挑出最具代表性、構圖多元的 8 張照片（必須包含所有已鎖定照片），並撰寫 3 個版本（narrative / short / humor）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
+請仔細觀察以下照片縮圖的真實內容（照片拍什麼就寫什麼，若不是爬山千萬不要寫爬山），挑出最具代表性、構圖多元的 8 張照片（必須包含所有已鎖定照片），並撰寫 3 個版本（narrative / short / humor）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
 【強制規定】：每一篇貼文（fb、ig、threads）都必須自然穿插 3～5 個貼合畫面與語氣的 Emoji 表情符號（如 😛、😂、😅、✨、☀️、🙌、🥾、🍽️、🤣），絕不可完全沒有表情符號！請勿捏造假網址。
 請嚴格只回傳 JSON：
 {
@@ -1756,7 +2155,7 @@ ${SETTINGS.examples}
       }];
 
       for (const p of pool) {
-        parts.push({ text: `照片 ID: ${p.id} (時間 ${fmtTime(p.takenAt)}, 鎖定=${p.locked})` });
+        parts.push({ text: `照片 ID: ${p.id} (時間 ${fmtTime(p.takenAt)}, 必留=${p.locked})` });
         parts.push({
           inline_data: { mime_type: "image/jpeg", data: p.thumbUrl.split(",")[1] }
         });
@@ -1786,44 +2185,46 @@ ${SETTINGS.examples}
             if (parsed.captions[k]) APP.captions[k] = Object.assign(APP.captions[k] || {}, parsed.captions[k]);
           });
         }
+        clearCaptionDirty();
         updateHeader();
-        renderReview();
-        renderPublish();
-        toast("🎉 AI 挑圖與專屬文案產出完成！");
+        renderWorkspace();
+        toast("🎉 AI 挑圖與個人風格隨筆已完成！");
       } catch (e) {
         alert("呼叫 Gemini 失敗：" + e.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = "✨ AI 看圖挑 8 幀＋寫隨筆"; }
       }
     }
 
     async function runGeminiCaptionsOnly() {
       if (!SETTINGS.geminiKey) {
-        toast("尚未填寫 Gemini API Key，請先到設定頁填寫");
-        goTab("settings");
+        toast("請先解鎖或填寫 Gemini API 金鑰");
+        openSettingsDrawer();
         return;
       }
       const ids = curPlatOrder();
       const selPhotos = ids.map(id => APP.photos.find(x => x.id === id)).filter(Boolean);
-      if (!selPhotos.length) { toast("請先選取至少 1 張照片"); return; }
+      if (!selPhotos.length) { toast("請先選取至少 1 幀照片"); return; }
 
       const btn = document.getElementById("btnGenCap");
       const capBox = document.getElementById("capBox");
-      if (btn) { btn.disabled = true; btn.textContent = "⏳ AI 看圖撰寫中..."; }
-      capBox.value = "⏳ Gemini 正在根據你目前選取的照片畫面撰寫貼文（約 2~4 秒）...";
-      toast("⏳ 正在根據已選照片畫面重寫文案...");
+      if (btn) { btn.disabled = true; btn.textContent = "⏳ AI 看圖潤筆中..."; }
+      capBox.value = "⏳ Gemini 正在根據你目前選取的照片與備註撰寫隨筆（約 2~4 秒）...";
+      clearCaptionDirty();
 
       const parts = [{
         text: `你是個人風格社群寫手。
 主題／旅程名稱：${APP.trip}
-補充備註：${APP.tripNote || "無"}
+補充備註（請務必自然融入貼文中）：${APP.tripNote || "無"}
 
 個人文風規則：
 - 語調：${SETTINGS.tone}
 - 慣用詞：${SETTINGS.preferred}
 - 嚴格禁用詞：${SETTINGS.forbidden}
-- 真實貼文範例（只學習語氣與分段節奏，切勿照抄範例裡的熱炒或爬山等無關情境）：
+- 真實貼文範例（只學習語氣與分段節奏，切勿照抄範例裡的無關情境）：
 ${SETTINGS.examples}
 
-請仔細觀察以下 ${selPhotos.length} 張已選照片的真實畫面細節（照片裡是什麼主題就寫什麼主題：例如美食、聚餐、街拍、旅遊、室內活動、風景等），撰寫 3 個不同切入角度的版本（narrative 敘事生活版 / short 精簡短版 / humor 幽默自嘲版）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
+請仔細觀察以下 ${selPhotos.length} 張已選照片的真實畫面細節（照片裡是什麼主題就寫什麼主題），撰寫 3 個不同切入角度的版本（narrative 敘事生活版 / short 精簡短版 / humor 幽默自嘲版）× 3 個平台（fb / ig / threads）的繁體中文台灣用語貼文。
 【強制規定】：每一篇貼文（fb、ig、threads）都必須自然穿插 3～5 個貼合畫面與語氣的 Emoji 表情符號（如 😛、😂、😅、✨、☀️、🙌、🥾、🍽️、🤣），絕不可完全沒有表情符號！請勿捏造假網址。
 請嚴格只回傳 JSON：
 {
@@ -1850,17 +2251,19 @@ ${SETTINGS.examples}
             if (parsed.captions[k]) APP.captions[k] = Object.assign(APP.captions[k] || {}, parsed.captions[k]);
           });
         }
-        renderPublish();
-        toast("✨ 文案已依目前照片畫面更新！");
+        renderWorkspace();
+        const v = APP.captions[APP.activeVar] || {};
+        capBox.value = v[APP.plat] || "";
+        toast("✨ 隨筆已依最新照片與備註更新！");
       } catch (e) {
         alert("呼叫 Gemini 失敗：" + e.message);
-        renderPublish();
+        renderWorkspace();
       } finally {
-        if (btn) { btn.disabled = false; btn.textContent = "✨ AI 看圖重寫文案"; }
+        if (btn) { btn.disabled = false; btn.textContent = "✨ 請 AI 依照片與備註潤筆"; }
       }
     }
 
-    // ==================== 匯出無 GPS 成品照、原生分享與 Telegram ====================
+    // ==================== 匯出無 GPS 成品照、一鍵打包 .zip 與 Telegram ====================
     async function renderCleanBlob(photo, platform, index) {
       const bmp = await createImageBitmap(photo.file);
       let tw = bmp.width, th = bmp.height;
@@ -1885,7 +2288,6 @@ ${SETTINGS.examples}
         th = Math.round(sh * scale);
       }
 
-      // 透過 Canvas 重新編碼 JPEG 會自動移除所有 GPS 與相機隱私 EXIF
       const c = document.createElement("canvas");
       c.width = tw;
       c.height = th;
@@ -1909,13 +2311,40 @@ ${SETTINGS.examples}
     async function copyTextOnly() {
       const text = document.getElementById("capBox").value;
       await navigator.clipboard.writeText(text);
-      toast("隨筆文字已複製至剪貼簿");
+      toast("📋 隨筆文字已複製至剪貼簿！");
+    }
+
+    async function downloadExportedZip() {
+      const ids = curPlatOrder();
+      if (!ids.length) { toast("請先選取至少 1 幀照片"); return; }
+      toast("📦 正在打包無 GPS 編號相片與隨筆 (.zip)...");
+      const files = await buildOrderedFiles(APP.plat);
+      const entries = [];
+      for (const f of files) {
+        const u8 = new Uint8Array(await f.arrayBuffer());
+        entries.push({ name: f.name, data: u8 });
+      }
+      const capText = document.getElementById("capBox").value || "";
+      entries.push({
+        name: `00_${APP.trip}_${APP.plat}_隨筆文案.txt`,
+        data: new TextEncoder().encode(capText)
+      });
+      const zipBlob = createStoreZipBlob(entries);
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${APP.trip}_${APP.plat}_ready_to_post.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 6000);
+      toast(`✅ 已下載打包壓縮檔（含 ${files.length} 幀編號相片與隨筆）！`);
     }
 
     async function shareNative() {
       const text = document.getElementById("capBox").value;
       try { await navigator.clipboard.writeText(text); } catch (e) {}
-      toast("📋 文案已複製！正在準備無 GPS 編號照片...");
+      toast("📋 隨筆已複製！正在準備無 GPS 編號相片...");
       const files = await buildOrderedFiles(APP.plat);
       if (navigator.canShare && navigator.canShare({ files })) {
         try {
@@ -1923,24 +2352,7 @@ ${SETTINGS.examples}
           return;
         } catch (e) {}
       }
-      await downloadExportedFiles();
-    }
-
-    async function downloadExportedFiles() {
-      toast("💾 正在依序匯出無 GPS 照片 (01 ~ N)...");
-      const files = await buildOrderedFiles(APP.plat);
-      for (const f of files) {
-        const url = URL.createObjectURL(f);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = f.name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        await new Promise(r => setTimeout(r, 250));
-      }
-      toast(`✅ 已依序下載 ${files.length} 張照片！`);
+      await downloadExportedZip();
     }
 
     async function detectTelegramChatId() {
@@ -1964,12 +2376,12 @@ ${SETTINGS.examples}
     }
 
     async function sendToTelegramMobile() {
-      if (!SETTINGS.tgToken) { goTab("settings"); alert("請先設定 Telegram Bot Token"); return; }
+      if (!SETTINGS.tgToken) { openSettingsDrawer(); alert("請先設定 Telegram Bot Token"); return; }
       if (!SETTINGS.tgChatId) {
         await detectTelegramChatId();
         if (!SETTINGS.tgChatId) return;
       }
-      toast("📤 正在傳送文案與排好順序的照片到 Telegram...");
+      toast("📤 正在傳送隨筆與排好順序的原畫質相片至 Telegram...");
       const text = document.getElementById("capBox").value;
       const header = `【${APP.plat.toUpperCase()}｜${APP.trip}】`;
 
@@ -1997,7 +2409,7 @@ ${SETTINGS.examples}
           body: fd
         });
       }
-      toast(`✅ 已傳送 ${files.length} 張原畫質照片至 Telegram！`);
+      toast(`✅ 已傳送 ${files.length} 幀原畫質相片至 Telegram！`);
     }
 
     function saveToStyleProfile() {
@@ -2006,7 +2418,7 @@ ${SETTINGS.examples}
       SETTINGS.examples = `${SETTINGS.examples}\n\n---\n${text}`.trim();
       document.getElementById("styleExIn").value = SETTINGS.examples;
       localStorage.setItem("picorganize_settings", JSON.stringify(SETTINGS));
-      toast("⭐ 已將此篇文案加入個人風格範例！");
+      toast("⭐ 已將此篇隨筆收錄進個人文風範例！");
     }
 
     function fetchBloggerJsonp(blogUrl) {
@@ -2046,11 +2458,11 @@ ${SETTINGS.examples}
     }
 
     async function learnStyleFromSamples() {
-      if (!SETTINGS.geminiKey) { alert("請先在上方填寫 Gemini API Key"); return; }
+      if (!SETTINGS.geminiKey) { alert("請先在上方填寫 Gemini API 金鑰"); return; }
       const blogUrl = document.getElementById("blogUrlIn").value.trim();
       const rawPosts = document.getElementById("rawPostsIn").value.trim();
       if (!blogUrl && !rawPosts) {
-        alert("請輸入 Google Blogger 網址，或貼上至少 1 篇你以前寫過的貼文！");
+        alert("請輸入 Google Blogger 網址，或貼上至少 1 篇以前寫過的貼文！");
         return;
       }
       const btn = document.getElementById("btnLearnStyle");
@@ -2073,7 +2485,7 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
 
 請嚴格只回傳 JSON（使用繁體中文台灣用語）：
 {
-  "tone": "語調、人設與段落留白習慣（例如：平實生活感、親切帶微幽默自嘲；每段 1~2 句維持留白）",
+  "tone": "語調、人設與段落留白習慣",
   "preferred": ["從樣本歸納出的作者常用口頭禪或連接詞 4~8 個"],
   "forbidden": ["靈魂的洗禮", "歲月靜好", "踏上一場未知的冒險", "每一刻都值得被珍惜", "以及與作者風格衝突的矯情詞彙"],
   "examples": ["從樣本中擷取最具代表性的 2 段真實貼文原文"]
@@ -2084,7 +2496,6 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
         if (Array.isArray(res.forbidden)) document.getElementById("styleForbidIn").value = res.forbidden.join(", ");
         if (Array.isArray(res.examples)) document.getElementById("styleExIn").value = res.examples.join("\n\n---\n");
         saveSettings();
-        // 若連線的是本機後端，同步寫回電腦端的 style_profile.yaml
         fetch("/api/style-learn", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -2095,7 +2506,7 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
         alert("文風分析失敗：" + e.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = "🧬 用 Gemini 逆向分析並更新我的文風檔";
+        btn.textContent = "分析並更新我的個人文風參照檔";
       }
     }
 
@@ -2125,7 +2536,6 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
     async function importStyleFile(file) {
       if (!file) return;
       const txt = await file.text();
-      // 簡易解析 YAML / JSON 中的欄位
       try {
         if (file.name.endsWith(".json")) {
           const obj = JSON.parse(txt);
@@ -2142,13 +2552,19 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
     }
 
     function resetTrip() {
-      if (!confirm("確定要清空目前選取的照片嗎？")) return;
+      if (!confirm("確定要收起目前桌上的所有相片，重新開始嗎？")) return;
+      APP.photos.forEach(p => { if (p.fullUrl) URL.revokeObjectURL(p.fullUrl); });
       APP.photos = [];
       APP.clusters = [];
+      APP.trip = "週末小旅行";
+      APP.tripCustomEdited = false;
+      APP.tripNote = "";
+      document.getElementById("tripNameIn").value = "週末小旅行";
+      document.getElementById("tripNoteIn").value = "";
       APP.orders = { shared: [], ig: null, fb: null, threads: null, aiSuggested: [] };
+      clearCaptionDirty();
       updateHeader();
-      renderReview();
-      toast("已清空旅程照片");
+      toast("已清空工作桌相片");
     }
 
     function openPinModal() {
@@ -2248,15 +2664,12 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
 
     function applyTheme(theme) {
       const isDark = theme === "darkroom";
-      if (isDark) {
-        document.documentElement.setAttribute("data-theme", "darkroom");
-      } else {
-        document.documentElement.removeAttribute("data-theme");
-      }
+      if (isDark) document.documentElement.setAttribute("data-theme", "darkroom");
+      else document.documentElement.removeAttribute("data-theme");
       const meta = document.getElementById("metaThemeColor");
       if (meta) meta.setAttribute("content", isDark ? "#1A1917" : "#F4F1EA");
       const btn = document.getElementById("themeToggleBtn");
-      if (btn) btn.textContent = isDark ? "☀️ 紙感手札" : "🌙 暗房微光";
+      if (btn) btn.textContent = isDark ? "☀️ 紙感" : "🌙 暗房";
       localStorage.setItem("picorganize_theme", isDark ? "darkroom" : "linen");
     }
 
@@ -2266,70 +2679,77 @@ ${samples.join("\n\n=== 分隔線 ===\n\n")}
     }
 
     function applyDeviceCopywriting() {
-      const isDesktop = window.matchMedia("(min-width: 920px)").matches;
-      const step2Title = document.getElementById("importStep2Title");
-      const step2Desc = document.getElementById("importStep2Desc");
+      const isDesktop = window.matchMedia("(min-width: 980px)").matches;
       const dzMain = document.getElementById("dropzoneMainText");
-      const btnPick = document.getElementById("btnPickAuto");
-      const revHint = document.getElementById("reviewStripHint");
-      const pubHint = document.getElementById("publishStripHint");
-
+      const stripHint = document.getElementById("filmStripHint");
       if (isDesktop) {
-        if (step2Title) step2Title.textContent = "從電腦攤開旅行相片（本機暗房高速顯影與快篩）";
-        if (step2Desc) {
-          step2Desc.innerHTML = "所有相片皆<strong>直接在你的電腦瀏覽器本機端完成顯影分析</strong>（對焦清晰度、連拍去重與時段分群），<strong>不會將數百張原圖上傳至雲端</strong>，保有私密與流暢。";
-        }
-        if (dzMain) dzMain.textContent = "將電腦資料夾內的照片直接拖放至此，或點此選取檔案";
-        if (btnPick) btnPick.textContent = "從電腦選取旅行照片（暗房快篩＆初選 8 幀）";
-        if (revHint) revHint.textContent = "35mm 已選底片軌（滑鼠直接拖曳底片格，或點 ◀ ▶ 調整敘事順序）";
-        if (pubHint) pubHint.textContent = "滑鼠拖曳下方底片格，或點 ◀ ▶ 微調順序";
+        if (dzMain) dzMain.textContent = "將電腦資料夾內的照片或 Google 相簿 .zip 直接拖放至此，或點此選取";
+        if (stripHint) stripHint.textContent = "已選 35mm 底片軌（滑鼠直接拖曳底片格調整順序，點任一格放大檢視）";
+        document.getElementById("pane_cull").style.display = "block";
+        document.getElementById("pane_story").style.display = "block";
       } else {
-        if (step2Title) step2Title.textContent = "攤開旅行相片（本機暗房高速顯影與快篩）";
-        if (step2Desc) {
-          step2Desc.innerHTML = "所有相片皆<strong>直接在本機端完成顯影分析</strong>（對焦清晰度、連拍去重與時段分群），<strong>不會將數百張原圖上傳至雲端</strong>，省流量又流暢。";
-        }
-        if (dzMain) dzMain.textContent = "點此從相簿挑選旅行照片";
-        if (btnPick) btnPick.textContent = "從相簿挑選旅行照片（暗房快篩＆初選 8 幀）";
-        if (revHint) revHint.textContent = "35mm 已選底片軌（長按底片格拖曳，或點 ◀ ▶ 調整敘事順序）";
-        if (pubHint) pubHint.textContent = "長按下方底片格拖曳，或點 ◀ ▶ 微調順序";
+        if (dzMain) dzMain.textContent = "點此從相簿挑選旅行照片（或選取 .zip 壓縮包）";
+        if (stripHint) stripHint.textContent = "已選 35mm 底片軌（長按底片格拖曳排序，或點 ◀ ▶ 微調）";
+        document.getElementById("pane_cull").style.display = APP.mobilePane === "cull" ? "block" : "none";
+        document.getElementById("pane_story").style.display = APP.mobilePane === "story" ? "block" : "none";
       }
     }
 
-    // 支援電腦版拖放照片與鍵盤左右方向鍵翻閱燈箱
-    (function setupDesktopInteractions() {
-      const dz = document.getElementById("photoDropzone");
-      if (dz) {
-        dz.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          dz.classList.add("dragover");
-        });
-        dz.addEventListener("dragleave", () => {
-          dz.classList.remove("dragover");
-        });
-        dz.addEventListener("drop", (e) => {
-          e.preventDefault();
-          dz.classList.remove("dragover");
-          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-            handleFiles(e.dataTransfer.files, "auto");
-          }
-        });
-      }
+    // 全視窗隨處可拖放照片或 .zip ＋ 燈箱鍵盤快捷鍵
+    (function setupGlobalInteractions() {
+      const overlay = document.getElementById("globalDropOverlay");
+      let dragDepth = 0;
+
+      window.addEventListener("dragenter", (e) => {
+        if (!e.dataTransfer || !Array.from(e.dataTransfer.types || []).includes("Files")) return;
+        e.preventDefault();
+        dragDepth++;
+        overlay.style.display = "flex";
+      });
+      window.addEventListener("dragover", (e) => {
+        if (!e.dataTransfer || !Array.from(e.dataTransfer.types || []).includes("Files")) return;
+        e.preventDefault();
+      });
+      window.addEventListener("dragleave", (e) => {
+        dragDepth = Math.max(0, dragDepth - 1);
+        if (dragDepth === 0) overlay.style.display = "none";
+      });
+      window.addEventListener("drop", (e) => {
+        dragDepth = 0;
+        overlay.style.display = "none";
+        if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+        e.preventDefault();
+        handleIncomingFiles(e.dataTransfer.files, false);
+      });
+
+      document.getElementById("tripNameIn")?.addEventListener("input", () => {
+        APP.tripCustomEdited = true;
+      });
+
       window.addEventListener("keydown", (e) => {
-        const pubVisible = document.getElementById("tab_publish")?.style.display !== "none";
-        if (!pubVisible) return;
+        // 若放大燈箱開啟中，優先操作燈箱
+        if (APP.lightboxPhotoId) {
+          if (e.key === "Escape") closeLightbox();
+          else if (e.key === "ArrowLeft") stepLightbox(-1);
+          else if (e.key === "ArrowRight") stepLightbox(1);
+          else if (e.key === " ") { e.preventDefault(); toggleLightboxSelect(); }
+          return;
+        }
         const tag = (document.activeElement?.tagName || "").toLowerCase();
         if (tag === "input" || tag === "textarea" || tag === "select") return;
         if (e.key === "ArrowLeft") stepStage(-1);
         else if (e.key === "ArrowRight") stepStage(1);
       });
+
       window.addEventListener("resize", applyDeviceCopywriting);
     })();
 
     applyTheme(localStorage.getItem("picorganize_theme") || "linen");
-    applyDeviceCopywriting();
     initSettingsUI();
     updatePinHeaderBadge();
-    // 若網頁內含 GitHub Actions 加密金鑰，且此瀏覽器尚未解鎖最新金鑰庫，一打開網頁就自動彈出 PIN 碼解鎖視窗！
+    updateHeader();
+    applyDeviceCopywriting();
+
     if (ENCRYPTED_VAULT && (!SETTINGS.geminiKey || localStorage.getItem("picorganize_vault_sig") !== ENCRYPTED_VAULT.slice(0, 16))) {
       openPinModal();
     }
