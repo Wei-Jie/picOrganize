@@ -26,6 +26,7 @@ from .captions import (
     learn_style_profile,
 )
 from .config import load_config
+from .cuisine_publisher import publish_trip_to_cuisine
 from .exporter import export_trip
 from .filter import run_filter
 from .importer import import_sources
@@ -336,3 +337,48 @@ def cmd_send(
     typer.echo(
         f"📤 已傳送 {res['platform'].upper()}（v{res['version']}）共 {res['photos']} 張照片至 Telegram！"
     )
+
+
+@app.command("bot")
+def cmd_bot(
+    wake_on_agent: Annotated[bool, typer.Option("--wake-on-agent", help="收到遙控 AI 助理指令時結束行程以喚醒 Antigravity")] = False,
+    no_welcome: Annotated[bool, typer.Option("--no-welcome", help="啟動時不重複發送歡迎選單")] = False,
+) -> None:
+    """啟動 Telegram 雙向選單機器人：支援「📸 傳照片寫貼文模式」與「🤖 遙控 AI 助理模式」。"""
+    from .telegram_bot import run_telegram_bot_loop
+
+    typer.echo("🤖 已啟動 Telegram 雙向選單機器人（@weijie_pic_bot），正在監聽手機訊息...")
+    run_telegram_bot_loop(send_welcome=not no_welcome, wake_on_agent_task=wake_on_agent)
+
+
+@app.command("publish-cuisine")
+def cmd_publish_cuisine(
+    trip: Annotated[str | None, typer.Option("--trip", "-t", help="旅程／相簿名稱")] = None,
+    platform: Annotated[str, typer.Option("--platform", "-p", help="採用哪個平台的照片順序與文案（預設 fb）")] = "fb",
+    variant: Annotated[str | None, typer.Option("--variant", "-v", help="文案版本（narrative / short / humor）")] = None,
+    title: Annotated[str | None, typer.Option("--title", help="自訂文章標題（預設自動擷取文案首行）")] = None,
+    category: Annotated[str, typer.Option("--category", help="文章分類：STORY / ANNOUNCEMENT / EVENT / SERIAL")] = "STORY",
+    tags: Annotated[str | None, typer.Option("--tags", help="逗號分隔標籤")] = None,
+    publish_now: Annotated[bool, typer.Option("--publish", help="直接公開發布（預設為 DRAFT 草稿供後台審閱）")] = False,
+    dry_run: Annotated[bool, typer.Option("--dry-run", help="僅預演檢查，不實際上傳與寫入")] = False,
+) -> None:
+    """將排好序的照片與個人風格文案直接推送至小灶私廚網站社群草稿匣。"""
+    cfg, tr = _resolve_trip(trip)
+    res = publish_trip_to_cuisine(
+        tr,
+        cfg,
+        platform=platform,
+        variant=variant,
+        title=title,
+        category=category,
+        tags=tags,
+        publish_now=publish_now,
+        dry_run=dry_run,
+    )
+    if res.get("dry_run"):
+        typer.echo(f"🧪 [Dry Run] 將推送至 {res['api_base']}｜標題：{res['title']}｜狀態：{res['status']}｜照片數：{res['photo_count']}")
+        return
+    typer.echo(
+        f"🍳 已推送至小灶私廚後台！文章 ID：{res['post_id']}｜標題：{res['title']}｜狀態：{res['status']}｜已上傳照片：{res['uploaded_photos']} 張"
+    )
+

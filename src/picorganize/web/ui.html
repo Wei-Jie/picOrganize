@@ -427,6 +427,7 @@
           </label>
           <button class="btn" onclick="resetAiOrder()">↺ 恢復 AI 建議順序</button>
           <button class="btn" onclick="openFolder()">📂 開啟照片資料夾</button>
+          <button class="btn" onclick="publishCuisine()">🍳 推送至小灶私廚草稿匣</button>
           <button class="btn primary" onclick="sendTelegram()">📤 傳送到 Telegram</button>
         </div>
       </div>
@@ -797,6 +798,24 @@
         const variant = document.getElementById("variantSel").value;
         const res = await api("/api/send-telegram", { platform: CURRENT_PLAT, variant });
         showToast(`✅ 已傳送 ${res.photos} 張照片至 Telegram（v${res.version}）`);
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function publishCuisine() {
+      try {
+        const title = prompt("請輸入小灶私廚社群文章標題（留白則自動擷取文案首行）：", "") ?? "";
+        showToast("🍳 正在上傳封面照並建立小灶私廚草稿...");
+        const variant = document.getElementById("variantSel").value;
+        const res = await api("/api/publish-cuisine", {
+          platform: CURRENT_PLAT,
+          variant,
+          title: title.trim() || null,
+          category: "STORY",
+          publish_now: false
+        });
+        showToast(`✅ 已存入小灶草稿匣（ID: ${res.post_id}，上傳 ${res.uploaded_photos} 張照片）！請至小灶後台審閱發布`);
       } catch (e) {
         alert(e.message);
       }

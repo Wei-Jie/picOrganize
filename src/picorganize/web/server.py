@@ -23,6 +23,7 @@ from ..captions import (
     save_style_example,
 )
 from ..config import AppConfig, load_config
+from ..cuisine_publisher import publish_trip_to_cuisine
 from ..exporter import export_trip, renumber_platform
 from ..manifest import PLATFORMS, Manifest, Trip, get_trip
 from ..selector import auto_select
@@ -79,6 +80,14 @@ class TelegramSendReq(BaseModel):
     platform: str = "ig"
     variant: str | None = None
     mode: str | None = None
+
+
+class CuisinePublishReq(BaseModel):
+    platform: str = "fb"
+    variant: str | None = None
+    title: str | None = None
+    category: str = "STORY"
+    publish_now: bool = False
 
 
 def create_app(trip_name: str, cfg: AppConfig | None = None, root: Path | None = None) -> FastAPI:
@@ -289,6 +298,22 @@ def create_app(trip_name: str, cfg: AppConfig | None = None, root: Path | None =
     def api_send_telegram(req: TelegramSendReq) -> dict:
         try:
             res = send_to_telegram(trip, cfg, platform=req.platform, variant=req.variant, mode=req.mode, root=root)
+            return {"ok": True, **res}
+        except Exception as e:
+            raise HTTPException(400, str(e))
+
+    @app.post("/api/publish-cuisine")
+    def api_publish_cuisine(req: CuisinePublishReq) -> dict:
+        try:
+            res = publish_trip_to_cuisine(
+                trip,
+                cfg,
+                platform=req.platform,
+                variant=req.variant,
+                title=req.title,
+                category=req.category,
+                publish_now=req.publish_now,
+            )
             return {"ok": True, **res}
         except Exception as e:
             raise HTTPException(400, str(e))
